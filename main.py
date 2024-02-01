@@ -87,18 +87,42 @@ def make_parser():
         help="Event origin end date search parameter, "
         "in YYYY-MM-DD format (e.g. 2020-12-31).",
     )
+    # TODO: format shape input to read shape and coords
+    bibli.add_argument(
+        "--shape",
+        type=str,
+        help="Shape and coordinates e.g.: ...",
+    )
+    # TODO: lookup sort_by options
+    bibli.add_argument(
+        "--sort_by",
+        default="day",
+        type=str,
+        help="Sort by e.g.: ...",
+    )
+    # TODO: check that year is correct format
     bibli.add_argument(
         "--published_min_year",
-        type=date_fromisoformat,
+        default="",
+        type=str,
         help="search parameter, " "in YYYY (e.g. 2020).",
     )
+    # TODO: check that year is correct format
     bibli.add_argument(
         "--published_max_year",
-        type=date_fromisoformat,
+        default="",
+        type=str,
         help="search parameter, " "in YYYY (e.g. 2021).",
     )
     bibli.add_argument(
+        "--publisher",
+        default="",
+        type=str,
+        help="search parameter, " " (e.g. BSSA).",
+    )
+    bibli.add_argument(
         "--published_author",
+        default="",
         type=str,
         help="search parameter, " " (e.g. Warren).",
     )
