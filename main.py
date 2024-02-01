@@ -32,16 +32,11 @@ the search results each time.
 import argparse
 import cmd
 import pathlib
-import shlex
 import sys
-import time
 
 from catalog import EventCatalog
 from formatting import date_fromisoformat
 from write import write_to_csv, write_to_json
-
-# The current time, used with the kill-on-change feat of the interactive shell.
-_START = time.time()
 
 
 def make_parser():
@@ -154,8 +149,6 @@ def bibli_search(catalog, args):
     """
     # Query the database with the collection of filters.
     results = catalog.bibli_search(args)
-    print("printout")
-    results.get_search_params()
 
     if not args.outfile:
         # Write the results to stdout, limiting to 10 entries if not specified.
@@ -174,10 +167,13 @@ def bibli_search(catalog, args):
 
 
 class SearchShell(cmd.Cmd):
-    """ 
+    """
     interactive search
     """
-    print('working on it')
+
+    def __init__(self):
+        self.status = "working on it"
+
 
 if __name__ == "__main__":
     """Run the main script."""
