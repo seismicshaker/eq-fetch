@@ -1,1 +1,3 @@
-# earthquake catalog downloader
+# Earthquake Catalog Downloader
+## Work in Progress
+
