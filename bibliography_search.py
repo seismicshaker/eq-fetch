@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def _format_search_params(args):
+def _dict_bibli_search(args):
     """
     arg -> search parameters
     """
@@ -30,7 +30,7 @@ def _format_search_params(args):
         shape = args.shape
         coords = args.coords
 
-    search_params = {
+    return {
         "syear": start_date.year,
         "smonth": start_date.month,
         "sday": start_date.day,
@@ -45,27 +45,26 @@ def _format_search_params(args):
         "coords": coords,
         "sort_by": sort_by,
     }
-    return search_params
 
 
 def format_url(args):
-    search = _format_search_params(args)
+    bibli_search = _dict_bibli_search(args)
 
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/bibsearch.pl"
-    shape = f"?searchshape={search['shape']}&coordvals={search['coords']}"
-    start_year = f"&start_year={search['syear']}"
-    start_month = f"&start_month={search['smonth']}"
-    start_day = f"&start_day={search['sday']}"
+    shape = f"?searchshape={bibli_search['shape']}&coordvals={bibli_search['coords']}"
+    start_year = f"&start_year={bibli_search['syear']}"
+    start_month = f"&start_month={bibli_search['smonth']}"
+    start_day = f"&start_day={bibli_search['sday']}"
     start_time = "&stime=00%3A00%3A00"
-    end_year = f"&end_year={search['eyear']}"
-    end_month = f"&end_month={search['emonth']}"
-    end_day = f"&end_day={search['eday']}"
+    end_year = f"&end_year={bibli_search['eyear']}"
+    end_month = f"&end_month={bibli_search['emonth']}"
+    end_day = f"&end_day={bibli_search['eday']}"
     end_time = "&etime=00%3A00%3A00"
-    min_year = f"&minyear={search['published_min_year']}"
-    max_year = f"&maxyear={search['published_max_year']}"
-    sort_by = f"&sortby=day{search['sort_by']}"
-    publisher = f"&publisher={search['publisher']}"
-    author = f"&authors={search['published_author']}"
+    min_year = f"&minyear={bibli_search['published_min_year']}"
+    max_year = f"&maxyear={bibli_search['published_max_year']}"
+    sort_by = f"&sortby=day{bibli_search['sort_by']}"
+    publisher = f"&publisher={bibli_search['publisher']}"
+    author = f"&authors={bibli_search['published_author']}"
 
     url = (
         base
