@@ -2,8 +2,11 @@
 
 from datetime import timedelta
 
+import requests
+from bs4 import BeautifulSoup
 
-def _format_search_paraams(args):
+
+def _format_search_params(args):
     """
     arg -> search parameters
     """
@@ -46,7 +49,7 @@ def _format_search_paraams(args):
 
 
 def format_url(args):
-    search = _format_search_paraams(args)
+    search = _format_search_params(args)
 
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/bibsearch.pl"
     shape = f"?searchshape={search['shape']}&coordvals={search['coords']}"
@@ -83,3 +86,22 @@ def format_url(args):
     )
 
     return url
+
+
+def fetch_url(url):
+    # reqest web page
+    response = requests.get(url)
+    # get HTML text
+    html = response.text
+    # parse the HTML
+    soup = BeautifulSoup(html, "html.parser")
+    # isolate body text
+    body = soup.body.get_text().strip()
+
+    return body
+
+
+def parse_bibli_page(body):
+    cat = body
+
+    return cat

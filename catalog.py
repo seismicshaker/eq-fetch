@@ -31,11 +31,14 @@ class EventCatalog:
         :param search_params: A collection of user-specified search criteria.
         :return: An 'EventCatalog' object.
         """
-        from bibliography_search import format_url
+        from bibliography_search import fetch_url, format_url, parse_bibli_page
 
         url = format_url(args)
-        print(url)
-        # TODO: fetch url data
+        body = fetch_url(url)
+        # TODO: parse bibli page
+        cat = parse_bibli_page(body)
+        # TODO: TEST (1) is search empty
+        # TODO: TEST (2) is search too full
 
         return self
 
