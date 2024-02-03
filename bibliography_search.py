@@ -93,14 +93,24 @@ def fetch_url(url):
     # get HTML text
     html = response.text
     # parse the HTML
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html,'html.parser')
     # isolate body text
-    body = soup.body.get_text().strip()
+    body = soup.body
 
     return body
 
 
 def parse_bibli_page(body):
-    cat = body
+    lines = [line for line in body.strings]
+    # Check empty search
+    if "No events with references were found" in lines[23]:
+        print('Empty')
+    # TODO: TEST (2) is search too full
+    if "limited to 500 seismic events" in lines[23]:
+        print('too many')
+    # Parse content
+    for n, line in enumerate(lines):
+        print(n, line)
 
-    return cat
+
+    return 'workng'

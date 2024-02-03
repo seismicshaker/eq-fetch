@@ -17,13 +17,13 @@ class EventCatalog:
         """
         self.start_date = None
         self.end_date = None
-        self.shape = None
-        self.coords = None
-        self.sort_by = None
-        self.published_min_year = None
-        self.published_max_year = None
-        self.published_author = None
-        self.publisher = None
+        self.shape = "POLY"
+        self.coords = ""
+        self.sort_by = "day"
+        self.published_min_year = ""
+        self.published_max_year = ""
+        self.published_author = ""
+        self.publisher = ""
 
     def bibli_search(self, args=()):
         """
@@ -37,8 +37,6 @@ class EventCatalog:
         body = fetch_url(url)
         # TODO: parse bibli page
         cat = parse_bibli_page(body)
-        # TODO: TEST (1) is search empty
-        # TODO: TEST (2) is search too full
 
         return self
 
