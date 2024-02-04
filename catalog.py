@@ -4,7 +4,7 @@ An 'EventCatalog' holds an
 """
 
 
-class EventCatalog:
+class SearchCatalog:
     """
     EventCatalog
     """
@@ -38,7 +38,7 @@ class EventCatalog:
         # TODO: parse bibli page
         cat = parse_bibli_page(body)
 
-        return self
+        return cat
 
     def hypo_search(self, args=()):
         """
@@ -50,7 +50,7 @@ class EventCatalog:
         print(args)
         return self
 
-    def get_search_params(self):
+    def get_params(self):
         """Return str(self)"""
         output = ""
         if self.start_date is not None:

@@ -34,7 +34,7 @@ import cmd
 import pathlib
 import sys
 
-from catalog import EventCatalog
+from catalog import SearchCatalog
 from formatting import date_fromisoformat
 from write import write_to_csv, write_to_json
 
@@ -203,7 +203,8 @@ if __name__ == "__main__":
     """Run the main script."""
     parser, inspect_parser, query_parser = make_parser()
     args = parser.parse_args()
-    catalog = EventCatalog()
+    catalog = SearchCatalog()
+    print(catalog)
 
     # Run the chosen subcommand.
     if args.cmd == "event":
