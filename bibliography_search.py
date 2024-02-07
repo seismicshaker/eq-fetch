@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
@@ -44,12 +45,11 @@ def _dict_bibli_search(args):
         "shape": shape,
         "coords": coords,
         "sort_by": sort_by,
+        "source": "isc-event_bibli",
     }
 
 
-def format_url(args):
-    bibli_search = _dict_bibli_search(args)
-
+def format_url(bibli_search):
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/bibsearch.pl"
     shape = f"?searchshape={bibli_search['shape']}"
     coords = f"&coordvals={bibli_search['coords']}"
@@ -90,6 +90,7 @@ def format_url(args):
 
 
 def fetch_url(url):
+    print(url)
     # reqest web page
     response = requests.get(url)
     # get HTML text
@@ -105,33 +106,53 @@ def fetch_url(url):
 def parse_bibli_page(body):
     lines = [line for line in body.strings]
     # Check empty search
+    # TODO: Raise exception
     if "No events with references were found" in lines[23]:
         return "Empty"
-    # TODO: TEST (2) is search too full
+    # TODO:split search catalog
     if "limited to 500 seismic events" in lines[23]:
         return "too many"
     # Parse content
     header_pos = [n for n, line in enumerate(lines) if line[:4] == " ISC"]
-    print(header_pos)
-    for n in header_pos:
-        print(lines[n])
-        print(lines[n + 2])
-        event_info = lines[n + 2].split()
-        event_agency = event_info[0]
+    header_pos.append(len(lines))
+    # init catalog
+    header_info = [
+        "origin_time",
+        "lat",
+        "lon",
+        "dep",
+        "mag_type",
+        "mag",
+        "mag_reporting_agency",
+        "event_reporting_agency",
+        "event_code",
+        "articles",
+    ]
+    cat = pd.DataFrame(
+        0, index=range(len(header_pos) - 1), columns=header_info
+    )
+    for n, pos in enumerate(header_pos[:-1]):
+        event_info = lines[pos + 2].split()
+        cat["event_reporting_agency"].loc[n] = event_info[0]
+        # TODO: string -> UTC datetime
         event_date = event_info[1]
         event_time = event_info[2]
-        event_lat = event_info[3]
-        event_lon = event_info[4]
-        event_dep = event_info[5]
+        cat["lat"].loc[n] = event_info[3]
+        cat["lon"].loc[n] = event_info[4]
+        cat["dep"].loc[n] = event_info[5]
+        # TODO: sep mag type and mag source
         event_mag_type = event_info[6]
-        event_mag = event_info[8]
+        cat["mag"].loc[n] = event_info[8]
+        # Parse numhber of articles
         num_articles = int(event_info[9])
-        try:
-            event_code = event_info[10]
-        except IndexError:
-            event_code = ""
+        article_lines = "".join(lines[pos + 3 : header_pos[n + 1]]).split("\n")
         articles = []
         for m in range(num_articles):
-            pos = n + 3 + m
-            print(m, lines[pos : pos + 5])
-    return "workng"
+            articles.append(article_lines[m])
+        cat["articles"].loc[n] = articles
+        # Check for event_code
+        try:
+            cat["event_code"] = event_info[10]
+        except IndexError:
+            cat["event_code"] = ""
+    return cat
