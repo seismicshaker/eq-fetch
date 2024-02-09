@@ -5,7 +5,7 @@ from datetime import timedelta
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from obspy.core import UTCDateTime, utcdatetime
+from obspy.core import UTCDateTime
 
 
 def _dict_bibli_search(args):
@@ -135,8 +135,6 @@ def parse_bibli_page(body):
     for n, pos in enumerate(header_pos[:-1]):
         headers = lines[pos].split()
         event_info = lines[pos + 2].split()
-        print(headers)
-        print(event_info)
         catalog["event_reporting_agency"].loc[n] = event_info[0]
         catalog["origin_time"] = UTCDateTime(
             event_info[1] + "T" + event_info[2]
