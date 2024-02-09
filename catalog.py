@@ -10,11 +10,7 @@ class SearchCatalog:
     """
 
     def __init__(self):
-        """Create a new 'EventCatalog'.
-
-        :param neos: A collection of `NearEarthObject`s.
-        :param approaches: A collection of `CloseApproach`es.
-        """
+        """Create a new 'SearchCatalog'."""
         self.start_date = None
         self.end_date = None
         self.shape = "POLY"
@@ -37,9 +33,9 @@ class SearchCatalog:
         bibli_search = _dict_bibli_search(args)
         url = format_url(bibli_search)
         body = fetch_url(url)
-        cat = parse_bibli_page(body)
+        catalog = parse_bibli_page(body)
 
-        return cat
+        return catalog, bibli_search
 
     def hypo_search(self, args=()):
         """

@@ -5,7 +5,7 @@ import csv
 import json
 
 
-def write_to_csv(results, filename):
+def write_to_csv(catalog, search, filename):
     """Write an iterable of `CloseApproach` objects to a CSV file.
 
     The precise output specification is in `README.md`. Roughly, each output row
@@ -15,18 +15,19 @@ def write_to_csv(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    fieldnames = ('datetime_utc', 'distance_au', 'velocity_km_s', 'designation', 
-                  'name', 'diameter_km', 'potentially_hazardous')
-    with open(filename, 'w') as fout:
-        writer = csv.DictWriter(fout, fieldnames=fieldnames)
+    # Save search parameters
+    search_filename = filename[:-4] + "_search.csv"
+    with open(search_filename, "w") as fout:
+        writer = csv.DictWriter(fout, fieldnames=search.keys())
         writer.writeheader()
-        for result in results:
-            row = {**result.serialize(),**result.neo.serialize()}
+        for param in search:
+            row = param
             writer.writerow(row)
+    # Save catalog
+    catalog.to_csv(filename)
 
 
-
-def write_to_json(results, filename):
+def write_to_json(catalog, search, filename):
     """Write an iterable of `CloseApproach` objects to a JSON file.
 
     The precise output specification is in `README.md`. Roughly, the output is a
@@ -37,10 +38,15 @@ def write_to_json(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
+    # Save search parameters
+    search_filename = filename[:-4] + "_search.json"
     rows_out = []
-    for result in results:
-        row = {**result.serialize(), 'neo':result.neo.serialize()}
+    for param in search:
+        row = param
         rows_out.append(row)
 
-    with open(filename, 'w') as fout:
+    with open(search_filename, "w") as fout:
         json.dump(rows_out, fout, indent=2)
+
+    # Save catalog
+    catalog.to_json(filename)
