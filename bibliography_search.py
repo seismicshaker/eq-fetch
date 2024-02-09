@@ -5,6 +5,7 @@ from datetime import timedelta
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from obspy.core import UTCDateTime, utcdatetime
 
 
 def _dict_bibli_search(args):
@@ -90,7 +91,7 @@ def format_url(bibli_search):
 
 
 def fetch_url(url):
-    print(url)
+    print("Search URL:\n", url)
     # reqest web page
     response = requests.get(url)
     # get HTML text
@@ -128,31 +129,35 @@ def parse_bibli_page(body):
         "event_code",
         "articles",
     ]
-    cat = pd.DataFrame(
-        0, index=range(len(header_pos) - 1), columns=header_info
+    catalog = pd.DataFrame(
+        index=range(len(header_pos) - 1), columns=header_info
     )
     for n, pos in enumerate(header_pos[:-1]):
+        headers = lines[pos].split()
         event_info = lines[pos + 2].split()
-        cat["event_reporting_agency"].loc[n] = event_info[0]
-        # TODO: string -> UTC datetime
-        event_date = event_info[1]
-        event_time = event_info[2]
-        cat["lat"].loc[n] = event_info[3]
-        cat["lon"].loc[n] = event_info[4]
-        cat["dep"].loc[n] = event_info[5]
-        # TODO: sep mag type and mag source
-        event_mag_type = event_info[6]
-        cat["mag"].loc[n] = event_info[8]
-        # Parse numhber of articles
-        num_articles = int(event_info[9])
+        print(headers)
+        print(event_info)
+        catalog["event_reporting_agency"].loc[n] = event_info[0]
+        catalog["origin_time"] = UTCDateTime(
+            event_info[1] + "T" + event_info[2]
+        )
+        catalog["lat"].loc[n] = event_info[3]
+        catalog["lon"].loc[n] = event_info[4]
+        catalog["dep"].loc[n] = event_info[5]
+        if len(event_info) < 10:
+            num_articles = int(event_info[6])
+        else:
+            # TODO: sep mag type and mag source
+            catalog["mag_type"].loc[n] = event_info[6]
+            catalog["mag"].loc[n] = event_info[8]
+            # Parse numhber of articles
+            num_articles = int(event_info[9])
         article_lines = "".join(lines[pos + 3 : header_pos[n + 1]]).split("\n")
         articles = []
         for m in range(num_articles):
             articles.append(article_lines[m])
-        cat["articles"].loc[n] = articles
+        catalog["articles"].loc[n] = articles
         # Check for event_code
-        try:
-            cat["event_code"] = event_info[10]
-        except IndexError:
-            cat["event_code"] = ""
-    return cat
+        if "code" in headers:
+            catalog["event_code"] = event_info[-1]
+    return catalog
