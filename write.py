@@ -41,13 +41,9 @@ def write_to_json(catalog, search, filename):
     # Save search parameters
     search_filename = str(filename)[:-4] + "_search.json"
     print("Saving search parameters to ", search_filename)
-    rows_out = []
-    for param in search:
-        row = param
-        rows_out.append(row)
 
     with open(search_filename, "w") as fout:
-        json.dump(rows_out, fout, indent=2)
+        json.dump(search, fout, indent=2)
 
     # Save catalog
     print("Saving catalog to ", filename)
