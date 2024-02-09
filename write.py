@@ -39,7 +39,7 @@ def write_to_json(catalog, search, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # Save search parameters
-    search_filename = str(filename)[:-4] + "_search.json"
+    search_filename = str(filename)[:-5] + "_search.json"
     print("Saving search parameters to ", search_filename)
 
     with open(search_filename, "w") as fout:
