@@ -176,7 +176,7 @@ def bibli_search(catalog, args):
 
     if not args.outfile:
         # Write the results to stdout, limiting to 10 entries if not specified.
-        print("No outfile specified:\n", results)
+        print("No outfile specified:\n", catalog)
     else:
         # Write the results to a file.
         if args.outfile.suffix == ".csv":
