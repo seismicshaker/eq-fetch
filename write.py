@@ -16,14 +16,14 @@ def write_to_csv(catalog, search, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # Save search parameters
-    search_filename = filename[:-4] + "_search.csv"
+    search_filename = str(filename)[:-4] + "_search.csv"
+    print("Saving search parameters to ", search_filename)
     with open(search_filename, "w") as fout:
         writer = csv.DictWriter(fout, fieldnames=search.keys())
         writer.writeheader()
-        for param in search:
-            row = param
-            writer.writerow(row)
+        writer.writerow(search)
     # Save catalog
+    print("Saving catalog to ", filename)
     catalog.to_csv(filename)
 
 
@@ -39,7 +39,8 @@ def write_to_json(catalog, search, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # Save search parameters
-    search_filename = filename[:-4] + "_search.json"
+    search_filename = str(filename)[:-4] + "_search.json"
+    print("Saving search parameters to ", search_filename)
     rows_out = []
     for param in search:
         row = param
@@ -49,4 +50,5 @@ def write_to_json(catalog, search, filename):
         json.dump(rows_out, fout, indent=2)
 
     # Save catalog
+    print("Saving catalog to ", filename)
     catalog.to_json(filename)
