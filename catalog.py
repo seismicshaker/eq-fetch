@@ -24,8 +24,8 @@ class SearchCatalog:
     def bibli_search(self, args=()):
         """
 
-        :param search_params: A collection of user-specified search criteria.
-        :return: An 'EventCatalog' object.
+        :param args: A collection of user-specified search criteria.
+        :return: A pandas object of earthquakes within search criteria.
         """
         from bibliography_search import (_dict_bibli_search, fetch_url,
                                          format_url, parse_bibli_page)
@@ -58,5 +58,3 @@ class SearchCatalog:
             output = "No search parameters defined"
         print(output)
 
-    def __str__(self):
-        return "catalog results placeholder"
