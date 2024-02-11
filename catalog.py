@@ -50,6 +50,22 @@ class SearchCatalog:
         print(args)
         return self
 
+    def get_params(self):
+        """Return list of Search Criteria keys and vaules"""
+        search_params = {}
+        if self.start_date is not None:
+            for attr in self.__dict__.items():
+                if attr[1] is None:
+                    continue
+                if str(attr[1]) == "":
+                    continue
+                if attr[0] == "earthquake_catalog":
+                    continue
+                search_params[attr[0]] = str(attr[1])
+        else:
+            raise Exception("Empty search parameters")
+        return search_params
+
     def __str__(self):
         """Return str(self)"""
         output = ""
@@ -59,7 +75,7 @@ class SearchCatalog:
                     continue
                 title = attr[0].replace("_", " ").title()
                 output += f"{title} = {attr[1]}\n"
+        else:
+            raise Exception("Empty Search parameters")
 
-        if output == "":
-            output = "No search parameters defined"
         return output
