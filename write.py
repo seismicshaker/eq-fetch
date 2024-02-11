@@ -5,39 +5,40 @@ import csv
 import json
 
 
-def write_to_csv(catalog, search, filename):
+def write_to_csv(catalog, filename):
     """
-    :param : 
+    :param :
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # Save search parameters
-    # TODO: Remove empty params
     search_filename = str(filename)[:-4] + "_search.csv"
-    print("Saving search parameters to ", search_filename)
+    print("\n\nSaving search parameters to ", search_filename)
+    search_params = catalog.get_params()
     with open(search_filename, "w") as fout:
-        writer = csv.DictWriter(fout, fieldnames=search.keys())
+        writer = csv.DictWriter(fout, fieldnames=search_params.keys())
         writer.writeheader()
-        writer.writerow(search)
+        writer.writerow(search_params)
     # Save catalog
-    # TODO: expand articles list
-    print("Saving catalog to ", filename)
-    catalog.to_csv(filename)
+    print("\nSaving catalog to ", filename)
+    results = catalog.earthquake_catalog
+    results.to_csv(filename)
 
 
-def write_to_json(catalog, search, filename):
+def write_to_json(catalog, filename):
     """
-    :param : 
+    :param :
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # Save search parameters
-    # TODO: Remove empty params
     search_filename = str(filename)[:-5] + "_search.json"
-    print("Saving search parameters to ", search_filename)
+    print("\n\nSaving search parameters to ", search_filename)
 
+    search_params = catalog.get_params()
     with open(search_filename, "w") as fout:
-        json.dump(search, fout, indent=2)
+        json.dump(search_params, fout, indent=2)
 
     # Save catalog
     # TODO: clean format
-    print("Saving catalog to ", filename)
-    catalog.to_json(filename)
+    print("\nSaving catalog to ", filename)
+    results = catalog.earthquake_catalog
+    results.to_json(filename)

@@ -160,4 +160,4 @@ def parse_bibli_page(searcher, body):
             ]
             rows.append(row)
     catalog = pd.DataFrame(rows, columns=header_info)
-    searcher.results = catalog
+    searcher.earthquake_catalog = catalog
