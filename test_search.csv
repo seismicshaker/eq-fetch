@@ -1,2 +1,2 @@
-syear,smonth,sday,eyear,emonth,eday,published_min_year,published_max_year,published_author,publisher,shape,coords,sort_by,source
-1997,1,1,1998,1,1,,,,,POLY,,day,isc-event_bibli
+start_date,end_date,shape,sort_by
+1997-01-01,1998-01-01,POLY,day
