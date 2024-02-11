@@ -8,65 +8,48 @@ from bs4 import BeautifulSoup
 from obspy.core import UTCDateTime
 
 
-def _dict_bibli_search(args):
+def dict_bibli_search(searcher, args):
     """
     arg -> search parameters
     """
     #
     if args.date is None:
-        start_date = args.start_date
-        end_date = args.end_date
+        searcher.start_date = args.start_date
+        searcher.end_date = args.end_date
     else:
-        start_date = args.date
-        end_date = start_date + timedelta(days=1)
-    published_min_year = args.published_min_year
-    published_max_year = args.published_max_year
-    published_author = args.published_author
-    publisher = args.publisher
-    sort_by = args.sort_by
+        searcher.start_date = args.date
+        searcher.end_date = searcher.start_date + timedelta(days=1)
+    searcher.published_min_year = args.published_min_year
+    searcher.published_max_year = args.published_max_year
+    searcher.published_author = args.published_author
+    searcher.publisher = args.publisher
+    searcher.sort_by = args.sort_by
     # TODO: extract shape and coords from args.shape
-    if args.shape is None:
-        shape = "POLY"
-        coords = ""
-    else:
-        shape = args.shape
-        coords = args.coords
-
-    return {
-        "syear": start_date.year,
-        "smonth": start_date.month,
-        "sday": start_date.day,
-        "eyear": end_date.year,
-        "emonth": end_date.month,
-        "eday": end_date.day,
-        "published_min_year": published_min_year,
-        "published_max_year": published_max_year,
-        "published_author": published_author,
-        "publisher": publisher,
-        "shape": shape,
-        "coords": coords,
-        "sort_by": sort_by,
-        "source": "isc-event_bibli",
-    }
+    if args.shape is not None:
+        searcher.shape = args.shape
+        searcher.coords = args.coords
 
 
-def format_url(bibli_search):
+def format_url(searcher):
+    """
+    searcher -> url
+    """
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/bibsearch.pl"
-    shape = f"?searchshape={bibli_search['shape']}"
-    coords = f"&coordvals={bibli_search['coords']}"
-    start_year = f"&start_year={bibli_search['syear']}"
-    start_month = f"&start_month={bibli_search['smonth']}"
-    start_day = f"&start_day={bibli_search['sday']}"
+    shape = f"?searchshape={searcher.shape}"
+    coords = f"&coordvals={searcher.coords}"
+    start_year = f"&start_year={searcher.start_date.year}"
+    start_month = f"&start_month={searcher.start_date.month}"
+    start_day = f"&start_day={searcher.start_date.day}"
     start_time = "&stime=00%3A00%3A00"
-    end_year = f"&end_year={bibli_search['eyear']}"
-    end_month = f"&end_month={bibli_search['emonth']}"
-    end_day = f"&end_day={bibli_search['eday']}"
+    end_year = f"&end_year={searcher.end_date.year}"
+    end_month = f"&end_month={searcher.end_date.month}"
+    end_day = f"&end_day={searcher.end_date.day}"
     end_time = "&etime=00%3A00%3A00"
-    min_year = f"&minyear={bibli_search['published_min_year']}"
-    max_year = f"&maxyear={bibli_search['published_max_year']}"
-    sort_by = f"&sortby=day{bibli_search['sort_by']}"
-    publisher = f"&publisher={bibli_search['publisher']}"
-    author = f"&authors={bibli_search['published_author']}"
+    min_year = f"&minyear={searcher.published_min_year}"
+    max_year = f"&maxyear={searcher.published_max_year}"
+    sort_by = f"&sortby=day{searcher.sort_by}"
+    publisher = f"&publisher={searcher.publisher}"
+    author = f"&authors={searcher.published_author}"
 
     url = (
         base
@@ -104,7 +87,7 @@ def fetch_url(url):
     return body
 
 
-def parse_bibli_page(body):
+def parse_bibli_page(searcher, body):
     lines = [line for line in body.strings]
     # Check empty search
     # TODO: Raise exception
@@ -158,4 +141,4 @@ def parse_bibli_page(body):
         # Check for event_code
         if "code" in headers:
             catalog["event_code"] = event_info[-1]
-    return catalog
+    searcher.results = catalog

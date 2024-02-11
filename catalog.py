@@ -20,6 +20,7 @@ class SearchCatalog:
         self.published_max_year = ""
         self.published_author = ""
         self.publisher = ""
+        self.earthquake_catalog = None
 
     def bibli_search(self, args=()):
         """
@@ -27,15 +28,17 @@ class SearchCatalog:
         :param args: A collection of user-specified search criteria.
         :return: A pandas object of earthquakes within search criteria.
         """
-        from bibliography_search import (_dict_bibli_search, fetch_url,
+        from bibliography_search import (dict_bibli_search, fetch_url,
                                          format_url, parse_bibli_page)
 
-        bibli_search = _dict_bibli_search(args)
-        url = format_url(bibli_search)
+        # Save args to self
+        dict_bibli_search(self, args)
+        # Format URL from search criteria
+        url = format_url(self)
         body = fetch_url(url)
-        catalog = parse_bibli_page(body)
+        parse_bibli_page(self, body)
 
-        return catalog, bibli_search
+        return self
 
     def hypo_search(self, args=()):
         """
@@ -47,14 +50,16 @@ class SearchCatalog:
         print(args)
         return self
 
-    def get_params(self):
+    def __str__(self):
         """Return str(self)"""
         output = ""
         if self.start_date is not None:
-            output += f"Start date={self.start_date}\n"
-        if self.end_date is not None:
-            output += f"End date={self.end_date}\n"
+            for attr in self.__dict__.items():
+                if attr[1] is None or str(attr[1]) == "":
+                    continue
+                title = attr[0].replace("_", " ").title()
+                output += f"{title} = {attr[1]}\n"
+
         if output == "":
             output = "No search parameters defined"
-        print(output)
-
+        return output
