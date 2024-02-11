@@ -172,7 +172,7 @@ def bibli_search(searcher, args):
                  level parser.
     """
     # Query the database with the collection of filters.
-    catalog, search = searcher.bibli_search(args)
+    catalog = searcher.bibli_search(args)
 
     if not args.outfile:
         # Write the results to stdout, limiting to 10 entries if not specified.
@@ -180,9 +180,9 @@ def bibli_search(searcher, args):
     else:
         # Write the results to a file.
         if args.outfile.suffix == ".csv":
-            write_to_csv(catalog, search, args.outfile)
+            write_to_csv(catalog, args.outfile)
         elif args.outfile.suffix == ".json":
-            write_to_json(catalog, search, args.outfile)
+            write_to_json(catalog, args.outfile)
         else:
             print(
                 "Please use an output file that ends with `.csv` or `.json`.",
