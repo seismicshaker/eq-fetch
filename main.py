@@ -149,14 +149,14 @@ def make_parser():
     return parser, hypo, bibli
 
 
-def hypo_search(catalog, args):
+def hypo_search(searcher, args):
     """
     event search
     """
-    print(catalog, args)
+    print(searcher, args)
 
 
-def bibli_search(catalog, args):
+def bibli_search(searcher, args):
     """Perform the `bibli subcommand.
 
     Create a collection of search parameters with `create_search_param` and
@@ -172,7 +172,7 @@ def bibli_search(catalog, args):
                  level parser.
     """
     # Query the database with the collection of filters.
-    catalog, search = catalog.bibli_search(args)
+    catalog, search = searcher.bibli_search(args)
 
     if not args.outfile:
         # Write the results to stdout, limiting to 10 entries if not specified.
@@ -203,13 +203,13 @@ if __name__ == "__main__":
     """Run the main script."""
     parser, inspect_parser, query_parser = make_parser()
     args = parser.parse_args()
-    catalog = SearchCatalog()
-    print(catalog)
+    searcher = SearchCatalog()
+    print(searcher)
 
     # Run the chosen subcommand.
     if args.cmd == "event":
-        hypo_search(catalog, args)
+        hypo_search(searcher, args)
     elif args.cmd == "bibli":
-        bibli_search(catalog, args)
+        bibli_search(searcher, args)
     elif args.cmd == "interactive":
         SearchShell()
