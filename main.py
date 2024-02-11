@@ -204,7 +204,6 @@ if __name__ == "__main__":
     parser, inspect_parser, query_parser = make_parser()
     args = parser.parse_args()
     searcher = SearchCatalog()
-    print(searcher)
 
     # Run the chosen subcommand.
     if args.cmd == "event":
