@@ -110,35 +110,54 @@ def parse_bibli_page(searcher, body):
         "mag_reporting_agency",
         "event_reporting_agency",
         "event_code",
+        "article_num",
         "articles",
     ]
-    catalog = pd.DataFrame(
-        index=range(len(header_pos) - 1), columns=header_info
-    )
+    rows = []
     for n, pos in enumerate(header_pos[:-1]):
+        # Split headers and event info
         headers = lines[pos].split()
         event_info = lines[pos + 2].split()
-        catalog["event_reporting_agency"].loc[n] = event_info[0]
-        catalog["origin_time"] = UTCDateTime(
-            event_info[1] + "T" + event_info[2]
-        )
-        catalog["lat"].loc[n] = event_info[3]
-        catalog["lon"].loc[n] = event_info[4]
-        catalog["dep"].loc[n] = event_info[5]
+        # Parse
+
+        event_reporting_agency = event_info[0]
+        origin_time = UTCDateTime(event_info[1] + "T" + event_info[2])
+        lat = event_info[3]
+        lon = event_info[4]
+        dep = event_info[5]
         if len(event_info) < 10:
             num_articles = int(event_info[6])
+            mag_type = ""
+            mag_reporting_agency = ""
+            mag = ""
         else:
             # TODO: sep mag type and mag source
-            catalog["mag_type"].loc[n] = event_info[6]
-            catalog["mag"].loc[n] = event_info[8]
+            mag_type = event_info[6]
+            mag_reporting_agency = ""
+            mag = event_info[8]
             # Parse numhber of articles
             num_articles = int(event_info[9])
-        article_lines = "".join(lines[pos + 3 : header_pos[n + 1]]).split("\n")
-        articles = []
-        for m in range(num_articles):
-            articles.append(article_lines[m])
-        catalog["articles"].loc[n] = articles
         # Check for event_code
         if "code" in headers:
-            catalog["event_code"] = event_info[-1]
+            event_code = event_info[-1]
+        else:
+            event_code = ""
+        # Iterate through articles
+        article_lines = "".join(lines[pos + 3 : header_pos[n + 1]]).split("\n")
+        for m in range(num_articles):
+            row = [
+                origin_time,
+                lat,
+                lon,
+                dep,
+                mag_type,
+                mag,
+                mag_reporting_agency,
+                event_reporting_agency,
+                event_code,
+                m + 1,
+                article_lines[m],
+            ]
+            rows.append(row)
+    catalog = pd.DataFrame(rows, columns=header_info)
     searcher.results = catalog
