@@ -66,9 +66,13 @@ class SearchCatalog:
             for attr in self.__dict__.items():
                 if attr[1] is None or str(attr[1]) == "":
                     continue
+                if attr[0] == "earthquake_catalog":
+                    continue
                 title = attr[0].replace("_", " ").title()
                 output += f"{title} = {attr[1]}\n"
         else:
             raise Exception("Empty Search parameters")
+        output += "\n\nSearch Results:"
+        output += f"\n{self.earthquake_catalog.head()}"
 
         return output
