@@ -74,6 +74,9 @@ def format_url(searcher):
 
 
 def fetch_url(url):
+    """
+    fetch html and parse out body text
+    """
     print("Search URL:\n", url)
     # reqest web page
     response = requests.get(url)
@@ -88,14 +91,21 @@ def fetch_url(url):
 
 
 def parse_bibli_page(searcher, body):
+    """
+    parse catalog from html body text
+    """
     lines = [line for line in body.strings]
+    # TODO: integrate RegularExpressions
     # Check empty search
-    # TODO: Raise exception
     if "No events with references were found" in lines[23]:
-        return "Empty"
+        print()
+        print(lines[23])
+        exit()
     # TODO:split search catalog
     if "limited to 500 seismic events" in lines[23]:
-        return "too many"
+        print()
+        print(lines[23])
+        exit()
     # Parse content
     header_pos = [n for n, line in enumerate(lines) if line[:4] == " ISC"]
     header_pos.append(len(lines))
@@ -132,8 +142,8 @@ def parse_bibli_page(searcher, body):
             mag = ""
         else:
             # TODO: sep mag type and mag source
-            mag_type = event_info[6]
-            mag_reporting_agency = ""
+            mag_type = event_info[6].split("(")[0]
+            mag_reporting_agency = event_info[6].split("(")[0]
             mag = event_info[8]
             # Parse numhber of articles
             num_articles = int(event_info[9])
