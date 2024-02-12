@@ -17,7 +17,6 @@ class SearchCatalog:
 
     def bibli_search(self, args=()):
         """
-
         :param args: A collection of user-specified search criteria.
         :return: A pandas object of earthquakes within search criteria.
         """
@@ -35,11 +34,19 @@ class SearchCatalog:
 
     def hypo_search(self, args=()):
         """
-
         :param search_params: A collection of user-specified search criteria.
-        :return: An 'EventCatalog' object.
+        :return: An 'SearchCatalog' object.
         """
         print("here hypo")
+        print(args)
+        return self
+
+    def gcmt_search(self, args=()):
+        """
+        :param search_params: A collection of user-specified search criteria.
+        :return: An 'SearchCatalog' object.
+        """
+        print("here gcmt")
         print(args)
         return self
 
