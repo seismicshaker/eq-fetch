@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from obspy.core import UTCDateTime
 
 
-def dict_bibli_search(searcher, args):
+def _dict_bibli_search(searcher, args):
     """
     arg -> search parameters
     """
@@ -33,10 +33,13 @@ def dict_bibli_search(searcher, args):
         searcher.coords = ""
 
 
-def format_url(searcher):
+def format_url(searcher, args):
     """
     searcher -> url
     """
+    # Extract search params
+    _dict_bibli_search(searcher, args)
+    # Format URL
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/bibsearch.pl"
     shape = f"?searchshape={searcher.shape}"
     coords = f"&coordvals={searcher.coords}"
