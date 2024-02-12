@@ -1,5 +1,5 @@
 """
-An 'EventCatalog' holds an
+A 'SearchCatalog' holds search params and catalog results
 
 """
 
@@ -13,13 +13,6 @@ class SearchCatalog:
         """Create a new 'SearchCatalog'."""
         self.start_date = None
         self.end_date = None
-        self.shape = "POLY"
-        self.coords = ""
-        self.sort_by = "day"
-        self.published_min_year = ""
-        self.published_max_year = ""
-        self.published_author = ""
-        self.publisher = ""
         self.earthquake_catalog = None
 
     def bibli_search(self, args=()):

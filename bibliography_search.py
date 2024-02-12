@@ -28,6 +28,9 @@ def dict_bibli_search(searcher, args):
     if args.shape is not None:
         searcher.shape = args.shape
         searcher.coords = args.coords
+    else:
+        searcher.shape = "POLY"
+        searcher.coords = ""
 
 
 def format_url(searcher):
