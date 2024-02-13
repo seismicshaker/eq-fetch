@@ -185,7 +185,23 @@ def hypo_search(searcher, args):
     """
     event search
     """
-    print(searcher, args)
+    # Query the database with the collection of filters.
+    catalog = searcher.hypo_search(args)
+
+    if not args.outfile:
+        # Write the results to stdout, limiting to 10 entries if not specified.
+        print("No outfile specified:\n", catalog)
+    else:
+        # Write the results to a file.
+        if args.outfile.suffix == ".csv":
+            write_to_csv(catalog, args.outfile)
+        elif args.outfile.suffix == ".json":
+            write_to_json(catalog, args.outfile)
+        else:
+            print(
+                "Please use an output file that ends with `.csv` or `.json`.",
+                file=sys.stderr,
+            )
 
 
 def bibli_search(searcher, args):
@@ -238,7 +254,7 @@ if __name__ == "__main__":
     searcher = SearchCatalog()
 
     # Run the chosen subcommand.
-    if args.cmd == "event":
+    if args.cmd == "hypo":
         hypo_search(searcher, args)
     elif args.cmd == "bibli":
         bibli_search(searcher, args)
