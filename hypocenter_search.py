@@ -1,11 +1,14 @@
 #! /usr.bin/env python3
 
 from datetime import timedelta
+from xml.etree import ElementTree
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from numpy import fromstring
 from obspy.core import UTCDateTime
+from sqlalchemy.sql.naming import event
 
 
 def _dict_bibli_search(searcher, args):
@@ -51,6 +54,7 @@ def _dict_bibli_search(searcher, args):
 def format_url(searcher, args):
     """
     searcher -> url
+    http://isc-mirror.iris.washington.edu/cgi-bin/web-db-run?request=COMPREHENSIVE&out_format=QuakeML&searchshape=RECT&bot_lat=&top_lat=&left_lon=&right_lon=&ctr_lat=&ctr_lon=&radius=&max_dist_units=deg&srn=&grn=&start_year=2022&start_month=1&start_day=31&start_time=00%3A00%3A00&end_year=2022&end_month=2&end_day=01&end_time=00%3A00%3A00&min_dep=&max_dep=&min_mag=&max_mag=&req_mag_type=&req_mag_agcy=&min_def=&max_def=
     """
     # Extract search params
     _dict_bibli_search(searcher, args)
@@ -65,7 +69,7 @@ def format_url(searcher, args):
     seismic_region = "&srn="
     geographic_region = "&grn="
     start_year = f"&start_year={searcher.start_date.year}"
-    start_month = "f&start_month={searcher.start_date.month}"
+    start_month = f"&start_month={searcher.start_date.month}"
     start_day = f"&start_day={searcher.start_date.day}"
     start_time = "&start_time=00%3A00%3A00"
     end_year = f"&end_year={searcher.end_date.year}"
@@ -119,21 +123,33 @@ def fetch_url(url):
     fetch html and parse out body text
     """
     print("Searching URL...\n", url, "\n")
+    ns = {
+        "q": "http://quakeml.org/xmlns/quakeml/1.2",
+        "d": "http://quakeml.org/xmlns/bed/1.2",
+        "catalog": "http://anss.org/xmlns/catalog/0.1",
+        "tensor": "http://anss.org/xmlns/tensor/0.1",
+    }
     # reqest web page
     response = requests.get(url)
     xml_data = response.content
-    # parse the HTML
-    soup = BeautifulSoup(xml_data, "xml")
-    # find all text in data
-    texts = str(soup.findAll(text=True)).replace("\\n", "")
-    # find all tags
-    tags = soup.find("entry")
-    print("texts", texts)
-    print("tags", tags)
-    # isolate body text
-    body = soup.body
+    xroot = ElementTree.fromstring(xml_data)
+    xeventParameters = xroot.findall("d:eventParameters", ns)
+    # check num events
+    for param in xeventParameters:
+        xevents = param.findall("d:event", ns)
+        print(f"found {len(xevents)} evnts")
+    #
+    for xev in xevents:
+        # build event dictionary
+        print(
+            [
+                (elem.tag, elem.attrib)
+                for elem in xev.iter()
+                if elem.attrib != {}
+            ]
+        )
 
-    return body
+    return "temp"
 
 
 def parse_bibli_page(searcher, body):
