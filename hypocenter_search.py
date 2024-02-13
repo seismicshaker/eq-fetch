@@ -4,7 +4,7 @@ from datetime import timedelta
 
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup, SoupStrainer
+from bs4 import BeautifulSoup
 from obspy.core import UTCDateTime
 
 
@@ -118,9 +118,10 @@ def fetch_url(url):
     """
     fetch html and parse out body text
     """
-    print("Search URL:\n", url)
+    print("Searching URL...\n", url, "\n")
     # reqest web page
-    xml_data = requests.get(url).content
+    response = requests.get(url)
+    xml_data = response.content
     # parse the HTML
     soup = BeautifulSoup(xml_data, "xml")
     # find all text in data
