@@ -92,6 +92,13 @@ def make_parser():
         type=str,
         help="search parameter, " "in YYYY (e.g. 2020).",
     )
+    hypo.add_argument(
+        "-o",
+        "--outfile",
+        type=pathlib.Path,
+        help="File in which to save structured results. "
+        "If omitted, results are printed to standard output.",
+    )
 
     # Add the 'bibli' subcommand parser.
     bibli = subparsers.add_parser(
