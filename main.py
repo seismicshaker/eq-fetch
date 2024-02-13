@@ -55,10 +55,42 @@ def make_parser():
         description="Event hypocenter search.",
     )
     hypo.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="Additionally, print all known close approaches of this NEO.",
+        "-d",
+        "--date",
+        type=date_fromisoformat,
+        help="Event origin date search parameter, "
+        "in YYYY-MM-DD format (e.g. 2020-12-31).",
+    )
+    hypo.add_argument(
+        "-s",
+        "--start_date",
+        type=date_fromisoformat,
+        help="Event origin start date search parameter, "
+        "in YYYY-MM-DD format (e.g. 2020-12-31).",
+    )
+    hypo.add_argument(
+        "-e",
+        "--end_date",
+        type=date_fromisoformat,
+        help="Event origin end date search parameter, "
+        "in YYYY-MM-DD format (e.g. 2020-12-31).",
+    )
+    hypo.add_argument(
+        "--shape",
+        type=str,
+        help="Shape and coordinates e.g.: ...",
+    )
+    hypo.add_argument(
+        "--sort_by",
+        default="day",
+        type=str,
+        help="Sort by e.g.: ...",
+    )
+    hypo.add_argument(
+        "--published_min_year",
+        default="",
+        type=str,
+        help="search parameter, " "in YYYY (e.g. 2020).",
     )
 
     # Add the 'bibli' subcommand parser.
