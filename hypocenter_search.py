@@ -20,10 +20,6 @@ def _dict_bibli_search(searcher, args):
         searcher.start_date = args.date
         searcher.end_date = searcher.start_date + timedelta(days=1)
     searcher.published_min_year = args.published_min_year
-    searcher.published_max_year = args.published_max_year
-    searcher.published_author = args.published_author
-    searcher.publisher = args.publisher
-    searcher.sort_by = args.sort_by
     if args.shape is not None:
         searcher.shape = args.shape
         searcher.coords = args.coords

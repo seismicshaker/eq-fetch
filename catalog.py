@@ -34,8 +34,11 @@ class SearchCatalog:
         :param search_params: A collection of user-specified search criteria.
         :return: An 'SearchCatalog' object.
         """
-        print("here hypo")
-        print(args)
+        from hypocenter_search import format_url
+
+        url = format_url(self, args)
+        print(url)
+
         return self
 
     def gcmt_search(self, args=()):
