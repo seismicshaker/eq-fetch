@@ -20,7 +20,7 @@ class SearchCatalog:
         :param args: A collection of user-specified search criteria.
         :return: A pandas object of earthquakes within search criteria.
         """
-        from bibliography_search import fetch_url, format_url, parse_bibli_page
+        from bibliography_search import format_url, fetch_url, parse_bibli_page
 
         # Format URL from search criteria
         url = format_url(self, args)
@@ -34,10 +34,11 @@ class SearchCatalog:
         :param search_params: A collection of user-specified search criteria.
         :return: An 'SearchCatalog' object.
         """
-        from hypocenter_search import format_url
+        from hypocenter_search import format_url, fetch_url
 
         url = format_url(self, args)
-        print(url)
+        xml = fetch_url(url)
+        print(xml)
 
         return self
 

@@ -4,7 +4,7 @@ from datetime import timedelta
 
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 from obspy.core import UTCDateTime
 
 
@@ -24,29 +24,24 @@ def _dict_bibli_search(searcher, args):
     else:
         searcher.reviewed = "COMPREHENSIVE"
     # TODO: Setup saerch region
-    if args.shape is not None:
-        searcher.shape = args.shape
-        searcher.coords = args.coords
-    else:
-        searcher.shape = "POLY"
-        searcher.coords = ""
+
     # TODO dep, mag, and phase filters
 
     searcher.optional_outputs = ""
     if args.include_null_mag:
         searcher.optional_outputs += "&null_mag=on"
     if args.include_null_phs:
-        searcher.optional_outputs += "&null_phs=on" 
+        searcher.optional_outputs += "&null_phs=on"
     if args.only_prime_hypo:
-        searcher.optional_outputs += "&prime_only=on"  
+        searcher.optional_outputs += "&prime_only=on"
     if args.include_phases:
-        searcher.optional_outputs += "&include_phases=on"  
+        searcher.optional_outputs += "&include_phases=on"
     if args.include_magnitudes:
-        searcher.optional_outputs += "&include_magnitudes=on"  
+        searcher.optional_outputs += "&include_magnitudes=on"
     if args.include_weblinks:
-        searcher.optional_outputs += "&include_links=on"  
+        searcher.optional_outputs += "&include_links=on"
     if args.include_headers:
-        searcher.optional_outputs += "&include_headers=on" 
+        searcher.optional_outputs += "&include_headers=on"
     if args.include_comments:
         searcher.optional_outputs += "&include_comments=on"
 
@@ -125,11 +120,15 @@ def fetch_url(url):
     """
     print("Search URL:\n", url)
     # reqest web page
-    response = requests.get(url)
-    # get HTML text
-    html = response.text
+    xml_data = requests.get(url).content
     # parse the HTML
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(xml_data, "xml")
+    # find all text in data
+    texts = str(soup.findAll(text=True)).replace("\\n", "")
+    # find all tags
+    tags = soup.find("entry")
+    print("texts", texts)
+    print("tags", tags)
     # isolate body text
     body = soup.body
 
