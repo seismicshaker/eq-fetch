@@ -165,7 +165,7 @@ def make_parser():
         help="include  ",
     )
     hypo.add_argument(
-        "--include_web_links",
+        "--include_weblinks",
         action="store_true",
         help="include  ",
     )

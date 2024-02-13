@@ -23,12 +23,32 @@ def _dict_bibli_search(searcher, args):
         searcher.reviewed = "REVIEWED"
     else:
         searcher.reviewed = "COMPREHENSIVE"
+    # TODO: Setup saerch region
     if args.shape is not None:
         searcher.shape = args.shape
         searcher.coords = args.coords
     else:
         searcher.shape = "POLY"
         searcher.coords = ""
+    # TODO dep, mag, and phase filters
+
+    searcher.optional_outputs = ""
+    if args.include_null_mag:
+        searcher.optional_outputs += "&null_mag=on"
+    if args.include_null_phs:
+        searcher.optional_outputs += "&null_phs=on" 
+    if args.only_prime_hypo:
+        searcher.optional_outputs += "&prime_only=on"  
+    if args.include_phases:
+        searcher.optional_outputs += "&include_phases=on"  
+    if args.include_magnitudes:
+        searcher.optional_outputs += "&include_magnitudes=on"  
+    if args.include_weblinks:
+        searcher.optional_outputs += "&include_links=on"  
+    if args.include_headers:
+        searcher.optional_outputs += "&include_headers=on" 
+    if args.include_comments:
+        searcher.optional_outputs += "&include_comments=on"
 
     searcher.source = "ISC Bulletin"
 
@@ -42,20 +62,22 @@ def format_url(searcher, args):
     # Format URL
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/web-db-run"
     request = f"?request={searcher.reviewed}"
-    output_format = "&out_format=ISF2"
+    output_format = "&out_format=QuakeML"
+    # TODO: setup saerch region
     shape = "&searchshape=RECT"
     rect_search = "&bot_lat=&top_lat=&left_lon=&right_lon="
     circ_search = "&ctr_lat=&ctr_lon=&radius=&max_dist_units=deg"
     seismic_region = "&srn="
     geographic_region = "&grn="
-    start_year = "&start_year=2022"
-    start_month = "&start_month=1&"
-    start_day = "start_day=01"
+    start_year = f"&start_year={searcher.start_date.year}"
+    start_month = "f&start_month={searcher.start_date.month}"
+    start_day = f"&start_day={searcher.start_date.day}"
     start_time = "&start_time=00%3A00%3A00"
-    end_year = "&end_year=2022"
-    end_month = "&end_month=2"
-    end_day = "&end_day=01"
+    end_year = f"&end_year={searcher.end_date.year}"
+    end_month = f"&end_month={searcher.end_date.month}"
+    end_day = f"&end_day={searcher.end_date.day}"
     end_time = "&end_time=00%3A00%3A00"
+    # TODO dep, mag, and phase filters
     min_dep = "&min_dep="
     max_dep = "&max_dep="
     min_mag = "&min_mag="
@@ -64,24 +86,7 @@ def format_url(searcher, args):
     mag_agency = "&req_mag_agcy="
     min_defining_phase = "&min_def="
     max_defining_phase = "&max_def="
-    null_mags = "&null_mag=on"  # optional
-    null_phases = "&null_phs=on"  # optional
-    output_prime_hypocenters = "&prime_only=on"  # optional
-    output_phases = "&include_phases=on"  # optional
-    output_magnitudes = "&include_magnitudes=on"  # optional
-    output_weblinks = "&include_links=on"  # optional
-    output_headers = "&include_headers=on"  # optional
-    output_comments = "&include_comments=on"  # optional
-    optional_outputs = (
-        null_mags
-        + null_phases
-        + output_prime_hypocenters
-        + output_phases
-        + output_magnitudes
-        + output_weblinks
-        + output_headers
-        + output_comments
-    )
+    optional_outputs = searcher.optional_outputs
 
     url = (
         base
