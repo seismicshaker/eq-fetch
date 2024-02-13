@@ -30,6 +30,8 @@ def _dict_bibli_search(searcher, args):
         searcher.shape = "POLY"
         searcher.coords = ""
 
+    searcher.source = "ISC Bulletin"
+
 
 def format_url(searcher, args):
     """
