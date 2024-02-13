@@ -76,22 +76,110 @@ def make_parser():
         "in YYYY-MM-DD format (e.g. 2020-12-31).",
     )
     hypo.add_argument(
-        "--shape",
+        "--search_region",
+        default="global",
         type=str,
-        help="Shape and coordinates e.g.: ...",
+        help="Search Region options\n"
+        "global [DEFAULT]\n"
+        "rect [Bottom Latitude (-90 to 90)] "
+        "[Top Latitude -90 to 90)] [Left Longitude -180 to 180] "
+        "[Right Longitude -180 to 180]\n"
+        "circ [Central Latitude (-90 to 90)] [Central Longitude -180 to 180] "
+        "[Radius (deg/km]]\n"
+        "seis_region [Seismic region number (1 to 50)]"
+        "geo_region [Geographic region number (1 to 757]]",
     )
     hypo.add_argument(
-        "--sort_by",
-        default="day",
-        type=str,
-        help="Sort by e.g.: ...",
+        "--reviewed",
+        action="store_true",
+        help="Reviewed ISC Bulletin",
     )
     hypo.add_argument(
-        "--published_min_year",
-        default="",
+        "--min_depth",
         type=str,
-        help="search parameter, " "in YYYY (e.g. 2020).",
+        help="min depth ",
     )
+    hypo.add_argument(
+        "--max_depth",
+        type=str,
+        help="max depth ",
+    )
+    hypo.add_argument(
+        "--min_mag",
+        type=str,
+        help="min magnitude ",
+    )
+    hypo.add_argument(
+        "--max_mag",
+        type=str,
+        help="max mag ",
+    )
+    hypo.add_argument(
+        "--mag_type",
+        type=str,
+        help="magnitude type",
+    )
+    hypo.add_argument(
+        "--mag_author",
+        type=str,
+        help="magnitude author ",
+    )
+    hypo.add_argument(
+        "--min_phase",
+        type=str,
+        help="min defining phase ",
+    )
+    hypo.add_argument(
+        "--max_phase",
+        type=str,
+        help="max defining phase ",
+    )
+    hypo.add_argument(
+        "--include_null_depth",
+        action="store_true",
+        help="include unknown depths ",
+    )
+    hypo.add_argument(
+        "--include_null_mag",
+        action="store_true",
+        help="include unknown magnitudes ",
+    )
+    hypo.add_argument(
+        "--include_null_phs",
+        action="store_true",
+        help="include unknown phases ",
+    )
+    hypo.add_argument(
+        "--only_prime_hypo",
+        action="store_true",
+        help="include  ",
+    )
+    hypo.add_argument(
+        "--include_phases",
+        action="store_true",
+        help="include phases ",
+    )
+    hypo.add_argument(
+        "--include_magnitudes",
+        action="store_true",
+        help="include  ",
+    )
+    hypo.add_argument(
+        "--include_web_links",
+        action="store_true",
+        help="include  ",
+    )
+    hypo.add_argument(
+        "--include_headers",
+        action="store_true",
+        help="include  ",
+    )
+    hypo.add_argument(
+        "--include_comments",
+        action="store_true",
+        help="include ",
+    )
+
     hypo.add_argument(
         "-o",
         "--outfile",

@@ -19,7 +19,10 @@ def _dict_bibli_search(searcher, args):
     else:
         searcher.start_date = args.date
         searcher.end_date = searcher.start_date + timedelta(days=1)
-    searcher.published_min_year = args.published_min_year
+    if args.reviewed:
+        searcher.reviewed = "REVIEWED"
+    else:
+        searcher.reviewed = "COMPREHENSIVE"
     if args.shape is not None:
         searcher.shape = args.shape
         searcher.coords = args.coords
@@ -36,7 +39,7 @@ def format_url(searcher, args):
     _dict_bibli_search(searcher, args)
     # Format URL
     base = "http://isc-mirror.iris.washington.edu/cgi-bin/web-db-run"
-    request = "?request=REVIEWED"
+    request = f"?request={searcher.reviewed}"
     output_format = "&out_format=ISF2"
     shape = "&searchshape=RECT"
     rect_search = "&bot_lat=&top_lat=&left_lon=&right_lon="
