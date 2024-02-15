@@ -275,12 +275,16 @@ def make_parser():
     )
     return parser, hypo, bibli
 
+def gcmt_search(searcher, args):
+    """
+    event search
+    """
+    return "In development"
 
 def hypo_search(searcher, args):
     """
     event search
     """
-    # Query the database with the collection of filters.
     catalog = searcher.hypo_search(args)
 
     if not args.outfile:
@@ -349,9 +353,11 @@ if __name__ == "__main__":
     searcher = SearchCatalog()
 
     # Run the chosen subcommand.
-    if args.cmd == "hypo":
-        hypo_search(searcher, args)
     elif args.cmd == "bibli":
         bibli_search(searcher, args)
+    if args.cmd == "hypo":
+        hypo_search(searcher, args)
+    if args.cmd == "gcmt":
+        gcmt_search(searcher, args)
     elif args.cmd == "interactive":
         SearchShell()
