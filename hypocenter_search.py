@@ -5,10 +5,7 @@ from xml.etree import ElementTree
 
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
-from numpy import fromstring
 from obspy.core import UTCDateTime
-from sqlalchemy.sql.naming import event
 
 
 def _dict_bibli_search(searcher, args):
