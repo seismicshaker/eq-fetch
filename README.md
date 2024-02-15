@@ -16,9 +16,14 @@ git clone git@github.com:seismicshaker/earthquakeCatalogDownloader.git
 
 2. Install Python dependencies
 
-_Conda environment_
+_Existing conda environment_
 ```sh
 conda install --yes --file requirements.txt
+```
+
+_New conda environment_
+```sh
+conda create --name catalogDL --file requirements.txt
 ```
 
 _Global python environment_
