@@ -353,11 +353,11 @@ if __name__ == "__main__":
     searcher = SearchCatalog()
 
     # Run the chosen subcommand.
-    elif args.cmd == "bibli":
+    if args.cmd == "bibli":
         bibli_search(searcher, args)
-    if args.cmd == "hypo":
+    elif args.cmd == "hypo":
         hypo_search(searcher, args)
-    if args.cmd == "gcmt":
+    elif args.cmd == "gcmt":
         gcmt_search(searcher, args)
     elif args.cmd == "interactive":
         SearchShell()
