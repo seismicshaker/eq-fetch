@@ -120,6 +120,16 @@ def fetch_url(url):
     fetch html and parse out body text
     """
     print("Searching URL...\n", url, "\n")
+    response = requests.get(url)
+    xml_data = response.content
+
+    return xml_data
+
+
+def parse_quakeML(searcher, xml_data):
+    """
+    parse catalog from html body text
+    """
     ns = {
         "q": "http://quakeml.org/xmlns/quakeml/1.2",
         "d": "http://quakeml.org/xmlns/bed/1.2",
@@ -127,14 +137,12 @@ def fetch_url(url):
         "tensor": "http://anss.org/xmlns/tensor/0.1",
     }
     # reqest web page
-    response = requests.get(url)
-    xml_data = response.content
     xroot = ElementTree.fromstring(xml_data)
     xeventParameters = xroot.findall("d:eventParameters", ns)
     # check num events
     for param in xeventParameters:
         xevents = param.findall("d:event", ns)
-        print(f"found {len(xevents)} evnts")
+        print(f"\nFound {len(xevents)} events...\n")
     #
     for xev in xevents:
         # build event dictionary
@@ -146,13 +154,6 @@ def fetch_url(url):
             ]
         )
 
-    return "temp"
-
-
-def parse_bibli_page(searcher, body):
-    """
-    parse catalog from html body text
-    """
     lines = [line for line in body.strings]
     # TODO: integrate RegularExpressions
     # Check empty search
