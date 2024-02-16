@@ -51,7 +51,6 @@ def _dict_bibli_search(searcher, args):
 def format_url(searcher, args):
     """
     searcher -> url
-    http://isc-mirror.iris.washington.edu/cgi-bin/web-db-run?request=COMPREHENSIVE&out_format=QuakeML&searchshape=RECT&bot_lat=&top_lat=&left_lon=&right_lon=&ctr_lat=&ctr_lon=&radius=&max_dist_units=deg&srn=&grn=&start_year=2022&start_month=1&start_day=31&start_time=00%3A00%3A00&end_year=2022&end_month=2&end_day=01&end_time=00%3A00%3A00&min_dep=&max_dep=&min_mag=&max_mag=&req_mag_type=&req_mag_agcy=&min_def=&max_def=
     """
     # Extract search params
     _dict_bibli_search(searcher, args)
@@ -128,31 +127,31 @@ def fetch_url(url):
 
 def parse_quakeML(searcher, xml_data):
     """
-    parse catalog from html body text
+    parse catalog from xml string
     """
-    ns = {
+    #
+    namespaces = {
         "q": "http://quakeml.org/xmlns/quakeml/1.2",
         "d": "http://quakeml.org/xmlns/bed/1.2",
         "catalog": "http://anss.org/xmlns/catalog/0.1",
         "tensor": "http://anss.org/xmlns/tensor/0.1",
     }
-    # reqest web page
-    xroot = ElementTree.fromstring(xml_data)
-    xeventParameters = xroot.findall("d:eventParameters", ns)
-    # check num events
-    for param in xeventParameters:
-        xevents = param.findall("d:event", ns)
-        print(f"\nFound {len(xevents)} events...\n")
-    #
-    for xev in xevents:
+    # build XML tree
+    tree = ElementTree.fromstring(xml_data)
+    # extract eventParameters
+    eventParameters = tree.findall("d:eventParameters", namespaces)
+    # extract events
+    events = [p.findall("d:event", namespaces) for p in eventParameters][0]
+    print(f"\nFound {len(events)} events...\n")
+    """
+    https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
+
+    https://github.com/Jamalreyhani/pyquakeml/blob/master/src/pyquakeml.py
+    """
+    for event in events:
         # build event dictionary
-        print(
-            [
-                (elem.tag, elem.attrib)
-                for elem in xev.iter()
-                if elem.attrib != {}
-            ]
-        )
+        print(event)
+        exit()
 
     lines = [line for line in body.strings]
     # TODO: integrate RegularExpressions
