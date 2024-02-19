@@ -129,6 +129,8 @@ def parse_quakeML(searcher, xml_data):
     """
     parse catalog from xml string
     """
+    # import quakeML as qml
+
     #
     namespaces = {
         "q": "http://quakeml.org/xmlns/quakeml/1.2",
@@ -149,12 +151,16 @@ def parse_quakeML(searcher, xml_data):
     https://github.com/Jamalreyhani/pyquakeml/blob/master/src/pyquakeml.py
     """
     for event in events:
+        # TODO: extract earthquake info from xml
         # build event dictionary
-        print(event)
+        print(event.attrib)
+        ev = {}
+        ev["publicID"] = event.attrib["publicID"]
+        #
+        origins = event.findall("d:origin", namespaces)
+        print(origins)
         exit()
 
-    lines = [line for line in body.strings]
-    # TODO: integrate RegularExpressions
     # Check empty search
     if "No events with references were found" in lines[23]:
         print()
@@ -212,7 +218,6 @@ def parse_quakeML(searcher, xml_data):
         else:
             event_code = ""
         # Iterate through articles
-        article_lines = "".join(lines[pos + 3 : header_pos[n + 1]]).split("\n")
         for m in range(num_articles):
             row = [
                 origin_time,
@@ -223,9 +228,6 @@ def parse_quakeML(searcher, xml_data):
                 mag,
                 mag_reporting_agency,
                 event_reporting_agency,
-                event_code,
-                m + 1,
-                article_lines[m],
             ]
             rows.append(row)
     catalog = pd.DataFrame(rows, columns=header_info)
