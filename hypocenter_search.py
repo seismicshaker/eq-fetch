@@ -132,6 +132,15 @@ def parse_quakeML(searcher, xml_data):
     # import quakeML as qml
 
     #
+    print(xml_data)
+    if b"your request cannot be processed at the present time" in xml_data:
+        print()
+        print(
+            "Sorry, but your request cannot be processed at the present"
+            + "  time. Please try again in a few minutes."
+        )
+        exit()
+
     namespaces = {
         "q": "http://quakeml.org/xmlns/quakeml/1.2",
         "d": "http://quakeml.org/xmlns/bed/1.2",
@@ -149,6 +158,8 @@ def parse_quakeML(searcher, xml_data):
     https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
 
     https://github.com/Jamalreyhani/pyquakeml/blob/master/src/pyquakeml.py
+
+    https://towardsdatascience.com/processing-xml-in-python-elementtree-c8992941efd2
     """
     for event in events:
         # TODO: extract earthquake info from xml
