@@ -129,20 +129,20 @@ def parse_quakeML(searcher, xml_data):
     """
     parse catalog from xml string
     """
-    # import quakeML as qml
+    import quakeML as qml
+
+    # Check response
     if b"your request cannot be processed at the present time" in xml_data:
         print(
             "\n\nSorry, the online repository is unresponsive at the moment."
             + " Please try again in a few minutes."
         )
         exit()
+    # Check empty search
 
-    namespaces = {
-        "q": "http://quakeml.org/xmlns/quakeml/1.2",
-        "d": "http://quakeml.org/xmlns/bed/1.2",
-        "catalog": "http://anss.org/xmlns/catalog/0.1",
-        "tensor": "http://anss.org/xmlns/tensor/0.1",
-    }
+    # Check overfilled search
+
+    namespaces = qml.get_namespaces()
     # build XML tree
     tree = ElementTree.fromstring(xml_data)
     # extract eventParameters
@@ -168,16 +168,6 @@ def parse_quakeML(searcher, xml_data):
         print(origins)
         exit()
 
-    # Check empty search
-    if "No events with references were found" in lines[23]:
-        print()
-        print(lines[23])
-        exit()
-    # TODO:split search catalog
-    if "limited to 500 seismic events" in lines[23]:
-        print()
-        print(lines[23])
-        exit()
     # Parse content
     header_pos = [n for n, line in enumerate(lines) if line[:4] == " ISC"]
     header_pos.append(len(lines))
