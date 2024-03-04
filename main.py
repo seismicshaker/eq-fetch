@@ -177,6 +177,7 @@ if __name__ == "__main__":
     if args.cmd == "bibli":
         bibli_search(searcher, args)
     elif args.cmd == "hypo":
+        print("\n\tFetching QuakeML file. This may take a few minutes...\n\n")
         hypo_search(searcher, args)
     elif args.cmd == "gcmt":
         gcmt_search(searcher, args)

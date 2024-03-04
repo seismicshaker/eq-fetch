@@ -130,14 +130,10 @@ def parse_quakeML(searcher, xml_data):
     parse catalog from xml string
     """
     # import quakeML as qml
-
-    #
-    print(xml_data)
     if b"your request cannot be processed at the present time" in xml_data:
-        print()
         print(
-            "Sorry, but your request cannot be processed at the present"
-            + "  time. Please try again in a few minutes."
+            "\n\nSorry, the online repository is unresponsive at the moment."
+            + " Please try again in a few minutes."
         )
         exit()
 

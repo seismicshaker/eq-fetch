@@ -1,16 +1,3 @@
-""" 
-    Modified from from Charles J. Ammon - Online Notes,
-    https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
-
-    Updated Python2 -> Python3
-"""
-
-namespaces = {
-    "q": "http://quakeml.org/xmlns/quakeml/1.2",
-    "d": "http://quakeml.org/xmlns/bed/1.2",
-    "catalog": "http://anss.org/xmlns/catalog/0.1",
-    "tensor": "http://anss.org/xmlns/tensor/0.1",
-}
 #
 # To make outputting information simple, I insure that certain values are in each dictionary,  
 #   whether they are defined in the xml or not. These dictionaries set up default values,
@@ -25,16 +12,17 @@ defaultArrival = {'genericAmplitude':'NA','type':'NA','unit':'NA',
 #
 defaultAmplitude = {'pickID':'NA','genericAmplitude':'NA','period':'NA',
                   'unit':'NA', 'evaluationMode':'NA'}                  
-
-
-def getEventOrigins(xevent):
-    xorigins = xevent.findall('d:origin',namespaces)
-    return xorigins
-
-def parse_origins(xevent,namespaces):
-    xorigins = xevent.findall('d:origin',namespaces)
+#
+#---------------------------------------------------------------------------------
+# def getEventOrigins(xevent):
+#     xorigins = xevent.findall('d:origin',ns)
+#     return xorigins
+#
+#---------------------------------------------------------------------------------
+def parse_origins(xevent,ns):
+    xorigins = xevent.findall('d:origin',ns)
     origins = []
-    for xorigin in xoriginamespaces:
+    for xorigin in xorigins:
         anOrigin = xorigin.attrib.copy()
         anOrigin.update({
         'otime': get_xitem_value_as_text(xorigin,'d:time','d:value'),
@@ -52,8 +40,8 @@ def parse_origins(xevent,namespaces):
     return origins 
 #
 #---------------------------------------------------------------------------------   
-def parse_magnitudes(xevent,namespaces):
-    xmags = xevent.findall('d:magnitude',namespaces)
+def parse_magnitudes(xevent,ns):
+    xmags = xevent.findall('d:magnitude',ns)
     mags = []
     for xmag in xmags:
         mdict = xmag.attrib.copy()        
@@ -76,7 +64,7 @@ def parse_magnitudes(xevent,namespaces):
 #
 #---------------------------------------------------------------------------------
 def parse_picks(xev):
-    xpicks = xev.findall('d:pick',namespaces)
+    xpicks = xev.findall('d:pick',ns)
     picks = []
     for pick in xpicks:
         pdict = defaultPick.copy()
@@ -94,13 +82,13 @@ def parse_picks(xev):
         if(value!='NA'):
             pdict.update({"evaluationMode" :value})
 
-        pdict.update(pick.find('d:waveformID',namespaces).attrib)
+        pdict.update(pick.find('d:waveformID',ns).attrib)
         picks.append(pdict)
     return picks
 #
 #---------------------------------------------------------------------------------
 def parse_arrivals(xorigin):
-    xarrivals = xorigin.findall('d:arrival',namespaces)
+    xarrivals = xorigin.findall('d:arrival',ns)
     arrivals = []
     for xarr in xarrivals:
         adict = defaultArrival.copy()
@@ -132,13 +120,13 @@ def parse_arrivals(xorigin):
 #  Extract the arrival items from the xml
 #
 def parse_amplitudes(xevent):
-    xamplitudes = xevent.findall('d:amplitude',namespaces)
+    xamplitudes = xevent.findall('d:amplitude',ns)
     amplitudes = []
     for xamp in xamplitudes:
         adict = xamp.attrib.copy()
         adict.update(defaultAmplitude)
 
-        value = xamp.find('d:waveformID',namespaces)
+        value = xamp.find('d:waveformID',ns)
         if(value != None):
             adict.update(value.attrib)
         
