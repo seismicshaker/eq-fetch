@@ -142,13 +142,12 @@ def parse_quakeML(searcher, xml_data):
 
     # Check overfilled search
 
-    namespaces = qml.get_namespaces()
     # build XML tree
     tree = ElementTree.fromstring(xml_data)
     # extract eventParameters
-    eventParameters = tree.findall("d:eventParameters", namespaces)
+    event_parameters = qml.getEventParameters(tree)
     # extract events
-    events = [p.findall("d:event", namespaces) for p in eventParameters][0]
+    events = qml.getEvents(event_parameters)
     print(f"\nFound {len(events)} events...\n")
     """
     https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
@@ -157,6 +156,8 @@ def parse_quakeML(searcher, xml_data):
 
     https://towardsdatascience.com/processing-xml-in-python-elementtree-c8992941efd2
     """
+    namespaces = qml.get_namespaces()
+    # TODO: itearte each event
     for event in events:
         # TODO: extract earthquake info from xml
         # build event dictionary
