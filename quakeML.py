@@ -26,6 +26,8 @@ defaultArrival = {'genericAmplitude':'NA','type':'NA','unit':'NA',
 defaultAmplitude = {'pickID':'NA','genericAmplitude':'NA','period':'NA',
                   'unit':'NA', 'evaluationMode':'NA'}                  
 
+def get_namespaces():
+    return namespaces
 
 def getEventOrigins(xevent):
     xorigins = xevent.findall('d:origin',namespaces)
@@ -34,7 +36,7 @@ def getEventOrigins(xevent):
 def parse_origins(xevent,namespaces):
     xorigins = xevent.findall('d:origin',namespaces)
     origins = []
-    for xorigin in xoriginamespaces:
+    for xorigin in xorigins:
         anOrigin = xorigin.attrib.copy()
         anOrigin.update({
         'otime': get_xitem_value_as_text(xorigin,'d:time','d:value'),
