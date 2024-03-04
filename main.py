@@ -75,8 +75,8 @@ def make_parser():
     # Search criterion args
     adds.date_range(bibli)
     adds.outfile(bibli)
-    # Bibilography args
 
+    # Bibilography args
     adds.bibli_region(bibli)
     adds.bibli_sort(bibli)
     adds.bibli_pub_info(bibli)
