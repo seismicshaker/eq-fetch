@@ -31,11 +31,10 @@ the search results each time.
 """
 import argparse
 import cmd
-import pathlib
 import sys
 
+import parser_adds as adds
 from catalog import SearchCatalog
-from formatting import date_fromisoformat
 from write import write_to_csv, write_to_json
 
 
@@ -54,213 +53,33 @@ def make_parser():
         "hypo",
         description="Event hypocenter search.",
     )
-    hypo.add_argument(
-        "-d",
-        "--date",
-        type=date_fromisoformat,
-        help="Event origin date search parameter, "
-        "in YYYY-MM-DD format (e.g. 2020-12-31).",
-    )
-    hypo.add_argument(
-        "-s",
-        "--start_date",
-        type=date_fromisoformat,
-        help="Event origin start date search parameter, "
-        "in YYYY-MM-DD format (e.g. 2020-12-31).",
-    )
-    hypo.add_argument(
-        "-e",
-        "--end_date",
-        type=date_fromisoformat,
-        help="Event origin end date search parameter, "
-        "in YYYY-MM-DD format (e.g. 2020-12-31).",
-    )
-    hypo.add_argument(
-        "--search_region",
-        default="global",
-        type=str,
-        help="Search Region options\n"
-        "global [DEFAULT]\n"
-        "rect [Bottom Latitude (-90 to 90)] "
-        "[Top Latitude -90 to 90)] [Left Longitude -180 to 180] "
-        "[Right Longitude -180 to 180]\n"
-        "circ [Central Latitude (-90 to 90)] [Central Longitude -180 to 180] "
-        "[Radius (deg/km]]\n"
-        "seis_region [Seismic region number (1 to 50)]"
-        "geo_region [Geographic region number (1 to 757]]",
-    )
-    hypo.add_argument(
-        "--reviewed",
-        action="store_true",
-        help="Reviewed ISC Bulletin",
-    )
-    hypo.add_argument(
-        "--min_depth",
-        type=str,
-        help="min depth ",
-    )
-    hypo.add_argument(
-        "--max_depth",
-        type=str,
-        help="max depth ",
-    )
-    hypo.add_argument(
-        "--min_mag",
-        type=str,
-        help="min magnitude ",
-    )
-    hypo.add_argument(
-        "--max_mag",
-        type=str,
-        help="max mag ",
-    )
-    hypo.add_argument(
-        "--mag_type",
-        type=str,
-        help="magnitude type",
-    )
-    hypo.add_argument(
-        "--mag_author",
-        type=str,
-        help="magnitude author ",
-    )
-    hypo.add_argument(
-        "--min_phase",
-        type=str,
-        help="min defining phase ",
-    )
-    hypo.add_argument(
-        "--max_phase",
-        type=str,
-        help="max defining phase ",
-    )
-    hypo.add_argument(
-        "--include_null_depth",
-        action="store_true",
-        help="include unknown depths ",
-    )
-    hypo.add_argument(
-        "--include_null_mag",
-        action="store_true",
-        help="include unknown magnitudes ",
-    )
-    hypo.add_argument(
-        "--include_null_phs",
-        action="store_true",
-        help="include unknown phases ",
-    )
-    hypo.add_argument(
-        "--only_prime_hypo",
-        action="store_true",
-        help="include  ",
-    )
-    hypo.add_argument(
-        "--include_phases",
-        action="store_true",
-        help="include phases ",
-    )
-    hypo.add_argument(
-        "--include_magnitudes",
-        action="store_true",
-        help="include  ",
-    )
-    hypo.add_argument(
-        "--include_weblinks",
-        action="store_true",
-        help="include  ",
-    )
-    hypo.add_argument(
-        "--include_headers",
-        action="store_true",
-        help="include  ",
-    )
-    hypo.add_argument(
-        "--include_comments",
-        action="store_true",
-        help="include ",
-    )
+    # Search criterion args
+    adds.date_range(hypo)
+    adds.depth_range(hypo)
+    adds.mag_range(hypo)
+    adds.mag_info(hypo)
+    adds.outfile(hypo)
 
-    hypo.add_argument(
-        "-o",
-        "--outfile",
-        type=pathlib.Path,
-        help="File in which to save structured results. "
-        "If omitted, results are printed to standard output.",
-    )
+    # ISC Bulletin args
+    adds.hypo_region(hypo)
+    adds.hypo_review(hypo)
+    adds.hypo_nulls(hypo)
+    adds.hypo_prime(hypo)
+    adds.hypo_misc(hypo)
 
     # Add the 'bibli' subcommand parser.
     bibli = subparsers.add_parser(
         "bibli",
         description="Event bibliography search.",
     )
-    bibli.add_argument(
-        "-d",
-        "--date",
-        type=date_fromisoformat,
-        help="Event origin date search parameter, "
-        "in YYYY-MM-DD format (e.g. 2020-12-31).",
-    )
-    bibli.add_argument(
-        "-s",
-        "--start_date",
-        type=date_fromisoformat,
-        help="Event origin start date search parameter, "
-        "in YYYY-MM-DD format (e.g. 2020-12-31).",
-    )
-    bibli.add_argument(
-        "-e",
-        "--end_date",
-        type=date_fromisoformat,
-        help="Event origin end date search parameter, "
-        "in YYYY-MM-DD format (e.g. 2020-12-31).",
-    )
-    # TODO: format shape input to read shape and coords
-    bibli.add_argument(
-        "--shape",
-        type=str,
-        help="Shape and coordinates e.g.: ...",
-    )
-    # TODO: lookup sort_by options
-    bibli.add_argument(
-        "--sort_by",
-        default="day",
-        type=str,
-        help="Sort by e.g.: ...",
-    )
-    # TODO: check that year is correct format
-    bibli.add_argument(
-        "--published_min_year",
-        default="",
-        type=str,
-        help="search parameter, " "in YYYY (e.g. 2020).",
-    )
-    # TODO: check that year is correct format
-    bibli.add_argument(
-        "--published_max_year",
-        default="",
-        type=str,
-        help="search parameter, " "in YYYY (e.g. 2021).",
-    )
-    bibli.add_argument(
-        "--publisher",
-        default="",
-        type=str,
-        help="search parameter, " " (e.g. BSSA).",
-    )
-    bibli.add_argument(
-        "--published_author",
-        default="",
-        type=str,
-        help="search parameter, " " (e.g. Warren).",
-    )
+    # Search criterion args
+    adds.date_range(bibli)
+    adds.outfile(bibli)
+    # Bibilography args
 
-    bibli.add_argument(
-        "-o",
-        "--outfile",
-        type=pathlib.Path,
-        help="File in which to save structured results. "
-        "If omitted, results are printed to standard output.",
-    )
+    adds.bibli_region(bibli)
+    adds.bibli_sort(bibli)
+    adds.bibli_pub_info(bibli)
 
     repl = subparsers.add_parser(
         "interactive",
@@ -275,11 +94,13 @@ def make_parser():
     )
     return parser, hypo, bibli
 
+
 def gcmt_search(searcher, args):
     """
     event search
     """
     return "In development"
+
 
 def hypo_search(searcher, args):
     """
