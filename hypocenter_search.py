@@ -131,6 +131,8 @@ def parse_quakeML(searcher, xml_data):
     """
     import quakeML as qml
 
+    print(xml_data)
+
     # Check response
     if b"your request cannot be processed at the present time" in xml_data:
         print(
@@ -139,16 +141,24 @@ def parse_quakeML(searcher, xml_data):
         )
         exit()
     # Check empty search
+    if b"EMPTY" in xml_data:
+        print("\n\nSorry, the search criterion yield no event.")
+        exit()
 
     # Check overfilled search
+    if b"OVERFILLED" in xml_data:
+        print(
+            "\n\nSorry, the search criterion yield more than XXX events."
+            + " Please consider limiting the date range."
+        )
+        exit()
 
-    # build XML tree
-    tree = ElementTree.fromstring(xml_data)
-    # extract eventParameters
+    # Extract events from XML
+    tree = ElementTree.fromstring(xml_data)  # build xml tree
     event_parameters = qml.getEventParameters(tree)
-    # extract events
     events = qml.getEvents(event_parameters)
     print(f"\nFound {len(events)} events...\n")
+
     """
     https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
 

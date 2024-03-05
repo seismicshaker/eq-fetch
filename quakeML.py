@@ -1,4 +1,4 @@
-""" 
+"""
     Modified from from Charles J. Ammon - Online Notes,
     https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
 
@@ -11,11 +11,12 @@ namespaces = {
     "catalog": "http://anss.org/xmlns/catalog/0.1",
     "tensor": "http://anss.org/xmlns/tensor/0.1",
 }
-#
-# To make outputting information simple, I insure that certain values are in each dictionary,
-#   whether they are defined in the xml or not. These dictionaries set up default values,
-#   but as the xml is parsed, defined key value pairs are updated.
-#
+
+# To make outputting information simple, I insure that certain values are in
+#   each dictionary, whether they are defined in the xml or not.
+#   These dictionaries set up default values, but as the xml is parsed, defined
+#   key value pairs are updated.
+
 defaultPick = {
     "stationCode": "--",
     "networkCode": "--",
@@ -24,7 +25,7 @@ defaultPick = {
     "phase": "NA",
     "time": "NA",
 }
-#
+
 defaultArrival = {
     "genericAmplitude": "NA",
     "type": "NA",
@@ -34,7 +35,7 @@ defaultArrival = {
     "timeResidual": "NA",
     "timeWeight": "NA",
 }
-#
+
 defaultAmplitude = {
     "pickID": "NA",
     "genericAmplitude": "NA",
