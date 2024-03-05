@@ -19,8 +19,8 @@ defaultAmplitude = {'pickID':'NA','genericAmplitude':'NA','period':'NA',
 #     return xorigins
 #
 #---------------------------------------------------------------------------------
-def parse_origins(xevent,ns):
-    xorigins = xevent.findall('d:origin',ns)
+def parse_origins(xevent,namespaces):
+    xorigins = xevent.findall('d:origin',namespaces)
     origins = []
     for xorigin in xorigins:
         anOrigin = xorigin.attrib.copy()
@@ -40,8 +40,8 @@ def parse_origins(xevent,ns):
     return origins 
 #
 #---------------------------------------------------------------------------------   
-def parse_magnitudes(xevent,ns):
-    xmags = xevent.findall('d:magnitude',ns)
+def parse_magnitudes(xevent,namespaces):
+    xmags = xevent.findall('d:magnitude',namespaces)
     mags = []
     for xmag in xmags:
         mdict = xmag.attrib.copy()        

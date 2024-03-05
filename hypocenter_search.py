@@ -131,8 +131,6 @@ def parse_quakeML(searcher, xml_data):
     """
     import quakeML as qml
 
-    print(xml_data)
-
     # Check response
     if b"your request cannot be processed at the present time" in xml_data:
         print(
@@ -140,6 +138,7 @@ def parse_quakeML(searcher, xml_data):
             + " Please try again in a few minutes."
         )
         exit()
+
     # Check empty search
     if b"EMPTY" in xml_data:
         print("\n\nSorry, the search criterion yield no event.")
@@ -154,10 +153,14 @@ def parse_quakeML(searcher, xml_data):
         exit()
 
     # Extract events from XML
-    tree = ElementTree.fromstring(xml_data)  # build xml tree
-    event_parameters = qml.getEventParameters(tree)
-    events = qml.getEvents(event_parameters)
-    print(f"\nFound {len(events)} events...\n")
+    xml_tree = ElementTree.fromstring(xml_data)  # build xml tree
+    for child in xml_tree:
+        print("child", child)
+        for tag in child:
+            print(tag)
+    xml_event_parameters = qml.getEventParameters(xml_tree)
+    xml_events = qml.getEvents(xml_event_parameters)
+    print(f"\nFound {len(xml_events)} events...\n")
 
     """
     https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
@@ -168,15 +171,47 @@ def parse_quakeML(searcher, xml_data):
     """
     namespaces = qml.get_namespaces()
     # TODO: itearte each event
-    for event in events:
+    catalog = []
+    for xml_event in xml_events:
         # TODO: extract earthquake info from xml
         # build event dictionary
-        print(event.attrib)
+        print(xml_event.attrib)
         ev = {}
-        ev["publicID"] = event.attrib["publicID"]
-        #
-        origins = event.findall("d:origin", namespaces)
-        print(origins)
+        try:
+            ev["eventid"] = xml_event.attrib[
+                "{http://anss.org/xmlns/catalog/0.1}eventid"
+            ]
+        except KeyError:
+            print("no eventID")
+        try:
+            ev["publicID"] = xml_event.attrib["publicID"]
+            ev["eventsource"] = xml_event.attrib[
+                "{http://anss.org/xmlns/catalog/0.1}eventsource"
+            ]
+        except KeyError:
+            print("no publicID")
+        try:
+            ev["datasource"] = xml_event.attrib[
+                "{http://anss.org/xmlns/catalog/0.1}datasource"
+            ]
+        except KeyError:
+            print("no datasource")
+        try:
+            ev["preferredOriginID"] = xml_event.find(
+                "d:preferredOriginID", namespaces
+            )
+        except KeyError:
+            print("no prefOriginID")
+        try:
+            ev["preferredMagnitudeID"] = xml_event.find(
+                "d:preferredMagnitudeID", namespaces
+            )
+        except KeyError:
+            print("no prefMagID")
+        mags = xml_event.findall("d:magnitude", namespaces)
+        print(mags)
+
+        print(ev)
         exit()
 
     # Parse content

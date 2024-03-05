@@ -62,3 +62,71 @@ def getEvents(event_parameters):
 def getEventOrigins(event):
     origins = event.findall("d:origin", namespaces)
     return origins
+
+
+def parse_origins(xevent, ns):
+    xorigins = xevent.findall("d:origin", ns)
+    origins = []
+    for xorigin in xorigins:
+        anOrigin = xorigin.attrib.copy()
+        anOrigin.update(
+            {
+                "otime": get_xitem_value_as_text(xorigin, "d:time", "d:value"),
+                "latitude": get_xitem_value_as_text(
+                    xorigin, "d:latitude", "d:value"
+                ),
+                "longitude": get_xitem_value_as_text(
+                    xorigin, "d:longitude", "d:value"
+                ),
+                "depth": get_xitem_value_as_text(
+                    xorigin, "d:depth", "d:value"
+                ),
+                "dotime": get_xitem_value_as_text(
+                    xorigin, "d:time", "d:uncertainty"
+                ),
+                "dlatitude": get_xitem_value_as_text(
+                    xorigin, "d:latitude", "d:uncertainty"
+                ),
+                "dlongitude": get_xitem_value_as_text(
+                    xorigin, "d:longitude", "d:uncertainty"
+                ),
+                "ddepth": get_xitem_value_as_text(
+                    xorigin, "d:depth", "d:uncertainty"
+                ),
+            }
+        )
+        #
+        origins.append(anOrigin)
+    #
+    return origins
+
+
+#
+# ---------------------------------------------------------------------------------
+def parse_magnitudes(xevent, ns):
+    xmags = xevent.findall("d:magnitude", ns)
+    mags = []
+    for xmag in xmags:
+        mdict = xmag.attrib.copy()
+        mdict.update(
+            {"mag": get_xitem_value_as_text(xmag, "d:mag", "d:value")}
+        )
+        mdict.update({"magType": get_xitem_as_text(xmag, "d:type")})
+        value = get_xitem_as_text(xmag, "d:evaluationMode")
+        if value != "NA":
+            mdict.update({"evaluationMode": value})
+
+        value = get_xitem_as_text(xmag, "d:originID")
+        if value != "NA":
+            mdict.update({"originID": value})
+
+        value = get_xitem_value_as_text(xmag, "d:creationInfo", "d:agencyID")
+        if value != "NA":
+            mdict.update({"agencyID": value})
+        #
+        mags.append(mdict)
+    return mags
+
+
+#
+# ---------------------------------------------------------------------------------
