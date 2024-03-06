@@ -34,10 +34,10 @@ class SearchCatalog:
         :param search_params: A collection of user-specified search criteria.
         :return: An 'SearchCatalog' object.
         """
-        from hypocenter_search import fetch_url, format_url, parse_quakeML
+        from hypocenter_search import fetch_xml, format_url, parse_quakeML
 
         url = format_url(self, args)
-        xml = fetch_url(url)
+        xml = fetch_xml(url)
         parse_quakeML(self, xml)
 
         return self

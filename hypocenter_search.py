@@ -5,6 +5,7 @@ from xml.etree import ElementTree
 
 import pandas as pd
 import requests
+import wget
 from obspy.core import UTCDateTime
 
 
@@ -114,13 +115,14 @@ def format_url(searcher, args):
     return url
 
 
-def fetch_url(url):
+def fetch_xml(url):
     """
     fetch html and parse out body text
     """
     print("Searching URL...\n", url, "\n")
-    response = requests.get(url)
-    xml_data = response.content
+    xml_file = wget.download(url, out="test.xml")
+    print(xml_file)
+    exit()
 
     return xml_data
 
