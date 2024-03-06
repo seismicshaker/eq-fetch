@@ -4,7 +4,7 @@
   <eventParameters publicID="smi:ISC/bulletin">
     <creationInfo>
       <agencyID>ISC</agencyID>
-      <creationTime>2024-03-06T22:05:42</creationTime>
+      <creationTime>2024-03-06T22:29:00</creationTime>
     </creationInfo>
     <description>Reviewed ISC Bulletin</description>
     <event publicID="smi:ISC/evid=621870444">

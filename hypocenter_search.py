@@ -5,7 +5,6 @@ from xml.etree import ElementTree
 
 import pandas as pd
 import requests
-import wget
 from obspy.core import UTCDateTime
 
 
@@ -120,9 +119,10 @@ def fetch_xml(url):
     fetch html and parse out body text
     """
     print("Searching URL...\n", url, "\n")
-    xml_file = wget.download(url, out="test.xml")
-    print(xml_file)
-    exit()
+
+    # TODO: redo requests method
+    response = urllib
+
 
     return xml_data
 
@@ -140,14 +140,15 @@ def parse_quakeML(searcher, xml_data):
             + " Please try again in a few minutes."
         )
         exit()
-
+    # TODO: input empty search string
     # Check empty search
     if b"EMPTY" in xml_data:
         print("\n\nSorry, the search criterion yield no event.")
         exit()
 
+    # TODO: overfilled search string
     # Check overfilled search
-    if b"OVERFILLED" in xml_data:
+    if b'OVERFILLED"' in xml_data:
         print(
             "\n\nSorry, the search criterion yield more than XXX events."
             + " Please consider limiting the date range."
@@ -155,7 +156,7 @@ def parse_quakeML(searcher, xml_data):
         exit()
 
     # Extract events from XML
-    xml_tree = ElementTree.fromstring(xml_data)  # build xml tree
+    xml_tree = ElementTree.parse(xml_file)  # build xml tree
     xml_event_parameters = qml.getEventParameters(xml_tree)
     xml_events = qml.getEvents(xml_event_parameters)
     print(f"\nFound {len(xml_events)} events...\n")
