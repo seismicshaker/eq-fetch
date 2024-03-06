@@ -41,7 +41,7 @@ def format_url(searcher, args):
     # Extract search params
     _dict_bibli_search(searcher, args)
     # Format URL
-    base = "http://isc-mirror.iris.washington.edu/cgi-bin/bibsearch.pl"
+    base = "https://www.isc.ac.uk/cgi-bin/bibsearch.pl"
     shape = f"?searchshape={searcher.shape}"
     coords = f"&coordvals={searcher.coords}"
     start_year = f"&start_year={searcher.start_date.year}"

@@ -55,7 +55,7 @@ def format_url(searcher, args):
     # Extract search params
     _dict_bibli_search(searcher, args)
     # Format URL
-    base = "http://isc-mirror.iris.washington.edu/cgi-bin/web-db-run"
+    base = "https://www.isc.ac.uk/cgi-bin/web-db-run"
     request = f"?request={searcher.reviewed}"
     output_format = "&out_format=QuakeML"
     # TODO: setup saerch region
@@ -154,10 +154,6 @@ def parse_quakeML(searcher, xml_data):
 
     # Extract events from XML
     xml_tree = ElementTree.fromstring(xml_data)  # build xml tree
-    for child in xml_tree:
-        print("child", child)
-        for tag in child:
-            print(tag)
     xml_event_parameters = qml.getEventParameters(xml_tree)
     xml_events = qml.getEvents(xml_event_parameters)
     print(f"\nFound {len(xml_events)} events...\n")
