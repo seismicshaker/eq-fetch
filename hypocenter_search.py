@@ -7,6 +7,8 @@ import pandas as pd
 import requests
 from obspy.core import UTCDateTime
 
+from quakeML import getEventOrigins
+
 
 def _dict_bibli_search(searcher, args):
     """
@@ -71,7 +73,7 @@ def format_url(searcher, args):
     end_year = f"&end_year={searcher.end_date.year}"
     end_month = f"&end_month={searcher.end_date.month}"
     end_day = f"&end_day={searcher.end_date.day}"
-    end_time = "&end_time=00%3A00%3A00"
+    end_time = "&end_time=23%3A59%3A59"
     # TODO dep, mag, and phase filters
     min_dep = "&min_dep="
     max_dep = "&max_dep="
@@ -132,6 +134,7 @@ def parse_quakeML(searcher, xml_data):
     """
     import quakeML as qml
 
+    print(xml_data.decode("ascii"))
     # Check response
     if b"your request cannot be processed at the present time" in xml_data:
         print(
@@ -141,7 +144,7 @@ def parse_quakeML(searcher, xml_data):
         exit()
     # TODO: input empty search string
     # Check empty search
-    if b"EMPTY" in xml_data:
+    if b"No events were found" in xml_data:
         print("\n\nSorry, the search criterion yield no event.")
         exit()
 
@@ -163,6 +166,8 @@ def parse_quakeML(searcher, xml_data):
     """
     https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
 
+    https://docs.python.org/3/library/xml.etree.elementtree.html
+
     https://github.com/Jamalreyhani/pyquakeml/blob/master/src/pyquakeml.py
 
     https://towardsdatascience.com/processing-xml-in-python-elementtree-c8992941efd2
@@ -172,8 +177,14 @@ def parse_quakeML(searcher, xml_data):
     catalog = []
     for xml_event in xml_events:
         # TODO: extract earthquake info from xml
+        #  following:
+        #    https://sites.psu.edu/charlesammon/2017/01/31/parsing-usgs-quakeml-files-with-python/
+        #    https://docs.python.org/3/library/xml.etree.elementtree.html
+
         # build event dictionary
-        print(xml_event.attrib)
+        origins = getEventOrigins(xml_event)
+        for origin in origins:
+            print("ori", origin.attrib)
         ev = {}
         try:
             ev["eventid"] = xml_event.attrib[
