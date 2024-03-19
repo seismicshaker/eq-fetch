@@ -120,9 +120,8 @@ def fetch_xml(url):
     """
     print("Searching URL...\n", url, "\n")
 
-    # TODO: redo requests method
-    response = urllib
-
+    response = requests.get(url)
+    xml_data = response.content
 
     return xml_data
 
@@ -156,7 +155,7 @@ def parse_quakeML(searcher, xml_data):
         exit()
 
     # Extract events from XML
-    xml_tree = ElementTree.parse(xml_file)  # build xml tree
+    xml_tree = ElementTree.fromstring(xml_data)  # build xml tree
     xml_event_parameters = qml.getEventParameters(xml_tree)
     xml_events = qml.getEvents(xml_event_parameters)
     print(f"\nFound {len(xml_events)} events...\n")
