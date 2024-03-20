@@ -1,4 +1,3 @@
-#! /usr.bin/env python3
 
 from datetime import timedelta
 from xml.etree import ElementTree
@@ -142,7 +141,6 @@ def parse_quakeML(searcher, xml_data):
             + " Please try again in a few minutes."
         )
         exit()
-    # TODO: input empty search string
     # Check empty search
     if b"No events were found" in xml_data:
         print("\n\nSorry, the search criterion yield no event.")
