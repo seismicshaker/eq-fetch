@@ -32,6 +32,10 @@ def _dict_bibli_search(searcher, args):
         searcher.shape = "POLY"
         searcher.coords = ""
     searcher.source = "ISC Event Bibliography"
+    searcher.min_depth = args.min_depth
+    searcher.max_depth = args.max_depth
+    searcher.min_mag = args.min_mag
+    searcher.max_mag = args.max_mag
 
 
 def format_url(searcher, args):
