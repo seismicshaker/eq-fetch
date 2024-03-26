@@ -33,12 +33,12 @@ def depth_range(parser):
     """ """
     parser.add_argument(
         "--min_depth",
-        type=str,
+        type=float,
         help="min depth ",
     )
     parser.add_argument(
         "--max_depth",
-        type=str,
+        type=float,
         help="max depth ",
     )
     return parser
@@ -49,12 +49,12 @@ def mag_range(parser):
 
     parser.add_argument(
         "--min_mag",
-        type=str,
+        type=float,
         help="min magnitude ",
     )
     parser.add_argument(
         "--max_mag",
-        type=str,
+        type=float,
         help="max mag ",
     )
     return parser
