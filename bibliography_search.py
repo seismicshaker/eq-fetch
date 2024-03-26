@@ -51,7 +51,7 @@ def format_url(searcher, args):
     end_year = f"&end_year={searcher.end_date.year}"
     end_month = f"&end_month={searcher.end_date.month}"
     end_day = f"&end_day={searcher.end_date.day}"
-    end_time = "&etime=00%3A00%3A00"
+    end_time = "&etime=23%3A59%3A29"
     min_year = f"&minyear={searcher.published_min_year}"
     max_year = f"&maxyear={searcher.published_max_year}"
     sort_by = f"&sortby=day{searcher.sort_by}"
