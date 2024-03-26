@@ -74,6 +74,8 @@ def make_parser():
     )
     # Search criterion args
     adds.date_range(bibli)
+    adds.depth_range(bibli)
+    adds.mag_range(bibli)
     adds.outfile(bibli)
 
     # Bibilography args
