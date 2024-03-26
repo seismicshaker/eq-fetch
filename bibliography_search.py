@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 
+import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -143,19 +144,19 @@ def parse_bibli_page(searcher, body):
 
         event_reporting_agency = event_info[0]
         origin_time = UTCDateTime(event_info[1] + "T" + event_info[2])
-        lat = event_info[3]
-        lon = event_info[4]
-        dep = event_info[5]
+        lat = float(event_info[3])
+        lon = float(event_info[4])
+        dep = float(event_info[5])
         if len(event_info) < 10:
             num_articles = int(event_info[6])
             mag_type = ""
             mag_reporting_agency = ""
-            mag = ""
+            mag = np.nan
         else:
             # TODO: sep mag type and mag source
             mag_type = event_info[6].split("(")[0]
             mag_reporting_agency = event_info[6].split("(")[0]
-            mag = event_info[8]
+            mag = float(event_info[8])
             # Parse numhber of articles
             num_articles = int(event_info[9])
         # Check for event_code
@@ -182,3 +183,27 @@ def parse_bibli_page(searcher, body):
             rows.append(row)
     catalog = pd.DataFrame(rows, columns=header_info)
     searcher.earthquake_catalog = catalog
+
+
+def filter_depths(searcher):
+    """If defined, filter depth ranges"""
+    # Define range
+    min_depth = 0.0 if searcher.min_depth is None else searcher.min_depth
+    max_depth = 6371.0 if searcher.max_depth is None else searcher.max_depth
+    # Subset catalog
+    catalog = searcher.earthquake_catalog
+    searcher.earthquake_catalog = catalog[
+        (catalog["dep"] >= min_depth) & (catalog["dep"] <= max_depth)
+    ]
+
+
+def filter_mags(searcher):
+    """If defined, filter magnitude ranges"""
+    # Define range
+    min_mag = -10.0 if searcher.min_mag is None else searcher.min_mag
+    max_mag = 10.0 if searcher.max_mag is None else searcher.max_mag
+    # Subset catalog
+    catalog = searcher.earthquake_catalog
+    searcher.earthquake_catalog = catalog[
+        (catalog["mag"] >= min_mag) & (catalog["mag"] <= max_mag)
+    ]
