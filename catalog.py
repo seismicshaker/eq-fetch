@@ -3,6 +3,8 @@ A 'SearchCatalog' holds search params and catalog results
 
 """
 
+import pandas as pd
+
 
 class SearchCatalog:
     """
@@ -13,7 +15,7 @@ class SearchCatalog:
         """Create a new 'SearchCatalog'."""
         self.start_date = None
         self.end_date = None
-        self.earthquake_catalog = None
+        self.earthquake_catalog = pd.Series()
 
     def bibli_search(self, args=()):
         """
