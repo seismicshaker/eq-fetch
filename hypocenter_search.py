@@ -130,9 +130,9 @@ def parse_quakeML(searcher, xml_data):
     """
     import quakeML as qml
 
-    if 0:
+    if 1:
         print(xml_data.decode("ascii"))
-        with open("19840812.xml", "w+") as fOut:
+        with open("20220812.xml", "w+") as fOut:
             for line in xml_data.decode("ascii"):
                 fOut.write(line)
     # Check response
@@ -181,7 +181,7 @@ def parse_quakeML(searcher, xml_data):
         #    https://docs.python.org/3/library/xml.etree.elementtree.html
 
         # build event dictionary
-        origins = getEventOrigins(xml_event)
+        origins = qml.getEventOrigins(xml_event)
         for origin in origins:
             print("ori", origin.attrib)
         ev = {}
