@@ -1,7 +1,5 @@
 #! /usr.bin/env python3
 
-from datetime import timedelta
-
 import numpy as np
 import pandas as pd
 import requests
@@ -19,7 +17,7 @@ def _dict_bibli_search(searcher, args):
         searcher.end_date = args.end_date
     else:
         searcher.start_date = args.date
-        searcher.end_date = searcher.start_date + timedelta(days=1)
+        searcher.end_date = args.date
     searcher.published_min_year = args.published_min_year
     searcher.published_max_year = args.published_max_year
     searcher.published_author = args.published_author
