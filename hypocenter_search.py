@@ -1,12 +1,9 @@
-
 from datetime import timedelta
 from xml.etree import ElementTree
 
 import pandas as pd
 import requests
 from obspy.core import UTCDateTime
-
-from quakeML import getEventOrigins
 
 
 def _dict_bibli_search(searcher, args):
@@ -133,7 +130,11 @@ def parse_quakeML(searcher, xml_data):
     """
     import quakeML as qml
 
-    print(xml_data.decode("ascii"))
+    if 0:
+        print(xml_data.decode("ascii"))
+        with open("19840812.xml", "w+") as fOut:
+            for line in xml_data.decode("ascii"):
+                fOut.write(line)
     # Check response
     if b"your request cannot be processed at the present time" in xml_data:
         print(
@@ -204,9 +205,7 @@ def parse_quakeML(searcher, xml_data):
         except KeyError:
             print("no datasource")
         try:
-            ev["preferredOriginID"] = xml_event.find(
-                "d:preferredOriginID", namespaces
-            )
+            ev["preferredOriginID"] = xml_event.find("d:preferredOriginID", namespaces)
         except KeyError:
             print("no prefOriginID")
         try:
