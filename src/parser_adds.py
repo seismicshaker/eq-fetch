@@ -1,6 +1,6 @@
 import pathlib
 
-from formatting import date_fromisoformat
+from .formatting import date_fromisoformat
 
 
 def date_range(parser):

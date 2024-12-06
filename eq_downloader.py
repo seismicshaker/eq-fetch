@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download search results from ISC
+"""Download search results from ISC.
 
 See `README.md` for a detailed discussion of this project.
 
@@ -32,10 +32,15 @@ the search results each time.
 import argparse
 import cmd
 import sys
+from importlib import import_module
 
-import parser_adds as adds
-from catalog import SearchCatalog
-from write import write_to_csv, write_to_json
+# Import local src code
+import_path = ".".join(__name__.split(".")[:-1])
+print(import_path)
+adds = import_module(import_path + "src.parser_adds")
+SearchCatalog = import_module("src.catalog").SearchCatalog
+write_to_csv = import_module("src.write").write_to_csv
+write_to_json = import_module("src.write").write_to_json
 
 
 def make_parser():
