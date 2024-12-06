@@ -88,6 +88,9 @@ def make_parser():
     adds.bibli_sort(bibli)
     adds.bibli_pub_info(bibli)
 
+    # Iterative Search
+    adds.iter_search(bibli)
+
     repl = subparsers.add_parser(
         "interactive",
         description="Start an interactive command session "

@@ -245,3 +245,14 @@ def bibli_pub_info(parser):
     )
 
     return parser
+
+
+def iter_search(parser):
+    """ """
+    parser.add_argument(
+        "--iter_search",
+        default="none",
+        type=str,
+        help="Divide date range. Options: year, month, day",
+    )
+    return parser

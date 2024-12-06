@@ -27,11 +27,21 @@ class SearchCatalog:
                                           parse_bibli_page)
 
         # Format URL from search criteria
-        url = format_url(self, args)
-        body = fetch_url(url)
-        parse_bibli_page(self, body)
-        filter_depths(self)
-        filter_mags(self)
+        # Check for Iterative search
+        if args.iter_search == "none":
+            url = format_url(self, args)
+            body = fetch_url(url)
+            parse_bibli_page(self, body)
+            filter_depths(self)
+            filter_mags(self)
+        else:
+            # TODO: write function to divide time range in increments of
+            # ars.iter_search
+            url = format_url(self, args)
+            body = fetch_url(url)
+            parse_bibli_page(self, body)
+            filter_depths(self)
+            filter_mags(self)
 
         return self
 
