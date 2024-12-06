@@ -14,6 +14,7 @@ _Below is an installation procedure for running **earthquakeCatalogDownloader**.
 git clone git@github.com:seismicshaker/earthquakeCatalogDownloader.git
 ```
 
+# TODO: Setup conda env
 2. Install Python dependencies
 
 _Existing conda environment_
