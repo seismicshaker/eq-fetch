@@ -111,10 +111,11 @@ def parse_bibli_page(searcher, body):
         print()
         print(lines[23])
         exit()
-    # TODO:split search catalog
     if "limited to 500 seismic events" in lines[23]:
-        print()
-        print(lines[23])
+        print(
+            "\n" + lines[23][21:-11] + ", or consider an iterative search."
+            "\n  i.e., eq_downloader.py --iter_search [increment]\n"
+        )
         exit()
     # Parse content
     header_pos = [n for n, line in enumerate(lines) if line[:4] == " ISC"]
