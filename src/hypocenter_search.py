@@ -128,6 +128,7 @@ def parse_quakeML(searcher, xml_data):
     """
     parse catalog from xml string
     """
+    # TODO: May not import local module
     import quakeML as qml
 
     if 1:
