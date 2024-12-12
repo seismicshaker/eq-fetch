@@ -1,26 +1,25 @@
-#!/usr/bin/env python3
 """Download search results from ISC.
 
 See `README.md` for a detailed discussion of this project.
 
 This script can be invoked from the command line::
 
-    $ python3 main.py {event,bibli,interactive} [args]
+    $ python eq_downloader.py {event,bibli,interactive} [args]
 
 The `hypo` subcommand searches event catalog:
 
-    $ python3 main.py hypo --date 1969-07-29
-    $ python3 main.py hypo --start-date 2020-01-01 --end-date 2020-01-31
-    $ python3 main.py hypo --date 1969-07-29 --outfile results.csv
-    $ python3 main.py hypo --date 1969-07-29 --outfile results.json
+    $ python eq_downloader.py hypo --date 1969-07-29
+    $ python eq_downloader.py hypo --start-date 2020-01-01 --end-date 2020-01-31
+    $ python eq_downloader.py hypo --date 1969-07-29 --outfile results.csv
+    $ python eq_downloader.py hypo --date 1969-07-29 --outfile results.json
     TODO: more search options
 
 The `bibli` subcommand searches for event bibliography:
 
-    $ python3 main.py bibli --date 1969-07-29
-    $ python3 main.py bibli --start-date 2020-01-01 --end-date 2020-01-31
-    $ python3 main.py bibli --date 1969-07-29 --outfile results.csv
-    $ python3 main.py bibli --date 1969-07-29 --outfile results.json
+    $ python eq_downloader.py bibli --date 1969-07-29
+    $ python eq_downloader.py bibli --start-date 2020-01-01 --end-date 2020-01-31
+    $ python eq_downloader.py bibli --date 1969-07-29 --outfile results.csv
+    $ python eq_downloader.py bibli --date 1969-07-29 --outfile results.json
     TODO: more search options
 
 
@@ -29,6 +28,7 @@ repeatedly execute `hypo` or `bibli` commands without having to wait to save
 the search results each time.
 
 """
+
 import argparse
 import cmd
 import sys
@@ -88,9 +88,21 @@ def make_parser():
     adds.bibli_sort(bibli)
     adds.bibli_pub_info(bibli)
 
-    # Iterative Search
+    # Iterative Bibilography Search
     adds.iter_search(bibli)
 
+    # GCMT
+    # Interactive
+    gcmt = subparsers.add_parser("gcmt", description="GCMT search.")
+    # Search criterion args
+    adds.date_range(gcmt)
+    adds.depth_range(gcmt)
+    adds.mag_range(gcmt)
+    adds.outfile(gcmt)
+
+    # Bibilography args
+
+    # Interactive
     repl = subparsers.add_parser(
         "interactive",
         description="Start an interactive command session "
@@ -106,16 +118,18 @@ def make_parser():
 
 
 def gcmt_search(searcher, args):
-    """
-    event search
-    """
+    """event search."""
+    # TODO: Write a format checker for args
+    # formatting.gcmt_args_check()
+    # TODO: Write catatog search
+    # catalog = searcher.gcmt_search(args)
     return "In development"
 
 
 def hypo_search(searcher, args):
-    """
-    event search
-    """
+    """event search."""
+    # TODO: Write a format checker for args
+    # formatting.hypo_args_check()
     catalog = searcher.hypo_search(args)
 
     if not args.outfile:
@@ -150,6 +164,8 @@ def bibli_search(searcher, args):
                  level parser.
     """
     # Query the database with the collection of filters.
+    # TODO: Write a format checker for args
+    # formatting.bibli_args_check()
     catalog = searcher.bibli_search(args)
 
     if not args.outfile:
@@ -170,7 +186,7 @@ def bibli_search(searcher, args):
 
 class SearchShell(cmd.Cmd):
     """
-    interactive search
+    interactive search.
     """
 
     def __init__(self):

@@ -1,15 +1,10 @@
-"""
-A 'SearchCatalog' holds search params and catalog results
-
-"""
+"""A 'SearchCatalog' holds search params and catalog results."""
 
 import pandas as pd
 
 
 class SearchCatalog:
-    """
-    EventCatalog
-    """
+    """EventCatalog."""
 
     def __init__(self):
         """Create a new 'SearchCatalog'."""
@@ -18,35 +13,35 @@ class SearchCatalog:
         self.earthquake_catalog = pd.Series()
 
     def bibli_search(self, args=()):
-        """
+        """search.
+
         :param args: A collection of user-specified search criteria.
         :return: A pandas object of earthquakes within search criteria.
         """
         from .bibliography_search import (fetch_url, filter_depths,
                                           filter_mags, format_url,
-                                          parse_bibli_page)
+                                          iter_search_dates, parse_bibli_page)
 
         # Format URL from search criteria
-        # Check for Iterative search
         if args.iter_search == "none":
             url = format_url(self, args)
             body = fetch_url(url)
             parse_bibli_page(self, body)
-            filter_depths(self)
-            filter_mags(self)
         else:
-            # TODO: write function to divide time range in increments of
-            # ars.iter_search
-            url = format_url(self, args)
-            body = fetch_url(url)
-            parse_bibli_page(self, body)
-            filter_depths(self)
-            filter_mags(self)
+            # Check for Iterative search defined
+            iter_args = iter_search_dates(args)
+            for arg_ in iter_args:
+                url = format_url(self, args)
+                body = fetch_url(url)
+                parse_bibli_page(self, body, iter_search=True)
+        filter_depths(self)
+        filter_mags(self)
 
         return self
 
     def hypo_search(self, args=()):
-        """
+        """serach.
+
         :param search_params: A collection of user-specified search criteria.
         :return: An 'SearchCatalog' object.
         """
@@ -59,16 +54,15 @@ class SearchCatalog:
         return self
 
     def gcmt_search(self, args=()):
-        """
+        """search.
+
         :param search_params: A collection of user-specified search criteria.
         :return: An 'SearchCatalog' object.
         """
-        print("here gcmt")
-        print(args)
         return self
 
     def get_params(self):
-        """Return list of Search Criteria keys and vaules"""
+        """Return list of Search Criteria keys and vaules."""
         search_params = {}
         if self.start_date is not None:
             for attr in self.__dict__.items():
@@ -84,7 +78,7 @@ class SearchCatalog:
         return search_params
 
     def __str__(self):
-        """Return str(self)"""
+        """Return str(self)."""
         output = ""
         if self.start_date is not None:
             for attr in self.__dict__.items():

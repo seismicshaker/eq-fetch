@@ -1,10 +1,12 @@
+"""."""
+
 import pathlib
 
 from .formatting import date_fromisoformat
 
 
 def date_range(parser):
-    """ """
+    """."""
     parser.add_argument(
         "-d",
         "--date",
@@ -30,7 +32,7 @@ def date_range(parser):
 
 
 def depth_range(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--min_depth",
         type=float,
@@ -45,7 +47,7 @@ def depth_range(parser):
 
 
 def mag_range(parser):
-    """ """
+    """."""
 
     parser.add_argument(
         "--min_mag",
@@ -61,7 +63,7 @@ def mag_range(parser):
 
 
 def mag_info(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--mag_type",
         type=str,
@@ -76,7 +78,7 @@ def mag_info(parser):
 
 
 def phase_list(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--min_phase",
         type=str,
@@ -91,7 +93,7 @@ def phase_list(parser):
 
 
 def outfile(parser):
-    """ """
+    """."""
     parser.add_argument(
         "-o",
         "--outfile",
@@ -103,7 +105,7 @@ def outfile(parser):
 
 
 def hypo_region(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--search_region",
         default="global",
@@ -122,7 +124,7 @@ def hypo_region(parser):
 
 
 def hypo_review(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--reviewed",
         action="store_true",
@@ -132,7 +134,7 @@ def hypo_review(parser):
 
 
 def hypo_nulls(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--include_null_depth",
         action="store_true",
@@ -152,7 +154,7 @@ def hypo_nulls(parser):
 
 
 def hypo_prime(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--only_prime_hypo",
         action="store_true",
@@ -162,7 +164,7 @@ def hypo_prime(parser):
 
 
 def hypo_misc(parser):
-    """ """
+    """."""
 
     parser.add_argument(
         "--include_phases",
@@ -193,7 +195,7 @@ def hypo_misc(parser):
 
 
 def bibli_region(parser):
-    """ """
+    """."""
     # TODO: format shape input to read shape and coords
     parser.add_argument(
         "--shape",
@@ -204,7 +206,7 @@ def bibli_region(parser):
 
 
 def bibli_sort(parser):
-    """ """
+    """."""
     # TODO: lookup sort_by options
     parser.add_argument(
         "--sort_by",
@@ -216,7 +218,7 @@ def bibli_sort(parser):
 
 
 def bibli_pub_info(parser):
-    """ """
+    """."""
     # TODO: check that year is correct format
     parser.add_argument(
         "--published_min_year",
@@ -248,7 +250,7 @@ def bibli_pub_info(parser):
 
 
 def iter_search(parser):
-    """ """
+    """."""
     parser.add_argument(
         "--iter_search",
         default="none",

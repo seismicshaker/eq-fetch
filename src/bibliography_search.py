@@ -1,4 +1,4 @@
-#! /usr.bin/env python3
+"""."""
 
 import numpy as np
 import pandas as pd
@@ -8,10 +8,7 @@ from obspy.core import UTCDateTime
 
 
 def _dict_bibli_search(searcher, args):
-    """
-    arg -> search parameters
-    """
-    #
+    """arg -> search parameters."""
     if args.date is None:
         searcher.start_date = args.start_date
         searcher.end_date = args.end_date
@@ -38,9 +35,7 @@ def _dict_bibli_search(searcher, args):
 
 
 def format_url(searcher, args):
-    """
-    searcher -> url
-    """
+    """searcher -> url."""
     # Extract search params
     _dict_bibli_search(searcher, args)
     # Format URL
@@ -84,9 +79,7 @@ def format_url(searcher, args):
 
 
 def fetch_url(url):
-    """
-    fetch html and parse out body text
-    """
+    """Fetch html and parse out body text."""
     print("Search URL:\n", url)
     # reqest web page
     response = requests.get(url)
@@ -100,12 +93,9 @@ def fetch_url(url):
     return body
 
 
-def parse_bibli_page(searcher, body):
-    """
-    parse catalog from html body text
-    """
+def parse_bibli_page(searcher, body, iter_search=False):
+    """Parse catalog from html body text."""
     lines = [line for line in body.strings]
-    # TODO: integrate RegularExpressions
     # Check empty search
     if "No events with references were found" in lines[23]:
         print()
@@ -185,7 +175,7 @@ def parse_bibli_page(searcher, body):
 
 
 def filter_depths(searcher):
-    """If defined, filter depth ranges"""
+    """If defined, filter depth ranges."""
     # Define range
     min_depth = 0.0 if searcher.min_depth is None else searcher.min_depth
     max_depth = 6371.0 if searcher.max_depth is None else searcher.max_depth
@@ -197,7 +187,7 @@ def filter_depths(searcher):
 
 
 def filter_mags(searcher):
-    """If defined, filter magnitude ranges"""
+    """If defined, filter magnitude ranges."""
     # Define range
     min_mag = -10.0 if searcher.min_mag is None else searcher.min_mag
     max_mag = 10.0 if searcher.max_mag is None else searcher.max_mag

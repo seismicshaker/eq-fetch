@@ -34,12 +34,12 @@ pip install -r requirements
 
 ## How it works
 
-This project is driven by the `main.py` script. That means that you'll run `python3 main.py ... ... ...` at the command line to invoke the program that will call your code.
+This project is driven by the `eq_downloader.py` script. That means that you'll run `python3 eq_downloader.py ... ... ...` at the command line to invoke the program that will call your code.
 
-At a command line, you can run `python3 main.py --help` for a list of search subcommands.
+At a command line, you can run `python3 eq_downloader.py --help` for a list of search subcommands.
 
 ```python
-usage: main.py [-h] {bibli,hypo,gcmt,interactive} ...
+usage: python eq_downloader.py {bibli,hypo,gcmt,interactive} ...
 
 Define search criterion.
 
