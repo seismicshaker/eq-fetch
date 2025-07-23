@@ -1,3 +1,5 @@
 # Python chache
 __pycache__/
 .venv
+*.egg-info
+*.dist-info

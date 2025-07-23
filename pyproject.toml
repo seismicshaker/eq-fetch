@@ -13,8 +13,7 @@ dependencies = [
   "Cython",
   "jupyter",
   "matplotlib",
-  "sqlite3",
-
+  "SQLAlchemy",
 ]
 [project.scripts]
 eq-fetch = "eq_fetch.cli:main"
