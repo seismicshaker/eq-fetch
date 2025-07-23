@@ -1,0 +1,27 @@
+[project]
+name = "eq-fetch"
+version = "0.1.0"
+description = "A streamlined CLI tool for fetching earthquake cataloging data."
+authors = [{ name = "Adam Arce", email = "adamarce@ymail.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "click>=8.0",
+  "requests",
+  "pandas",
+  "numpy",
+  "Cython",
+  "jupyter",
+  "matplotlib",
+  "sqlite3",
+
+]
+[project.scripts]
+eq-fetch = "eq_fetch.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=61", "wheel", "Cython"]
+build-backend = "setuptools.build_meta"

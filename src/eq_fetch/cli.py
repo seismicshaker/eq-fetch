@@ -7,11 +7,11 @@ from process import process_data
 
 
 @click.group()
-def cli():
+def main():
     pass
 
 
-@cli.command()
+@main.command()
 @click.option("--source", required=True, help="Source URL for catalog")
 @click.option("--output", required=True, help="Output filename")
 def download(source, output):
@@ -19,7 +19,7 @@ def download(source, output):
     download_catalog(source, output)
 
 
-@cli.command()
+@main.command()
 @click.option("--input", required=True, help="Input catalog file")
 @click.option("--min-magnitude", type=float, help="Minimum earthquake magnitude")
 def filter(input, min_magnitude):
@@ -27,7 +27,7 @@ def filter(input, min_magnitude):
     filter_catalog(input, min_magnitude)
 
 
-@cli.command()
+@main.command()
 @click.option("--input", required=True, help="Input catalog file")
 def process(input):
     """Process catalog data (possibly using C/Cython)."""
@@ -35,4 +35,4 @@ def process(input):
 
 
 if __name__ == "__main__":
-    cli()
+    main()
