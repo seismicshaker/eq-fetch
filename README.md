@@ -2,7 +2,19 @@
 
 ## About the Project
 
-This project is in early stage development. Any interested users should be able to clone package and use the ISC Event Bibliography search and save results as a CSV or JSON file. The ISC Bulletin saerch currently being worked on with the implimentation of GlobalCMT search next.
+This project is in early stage development. Any interested users should be able to clone package and use the ISC Event Bibliography search and save results as a CSV or JSON file. The ISC Bulletin search currently being worked on with the implementation of GlobalCMT search next.
+
+### Directory Structure
+
+    src/
+      eq_fetch/
+        __init__.py
+        cli.py          # Main CLI entry point (handles interactive shell/session)
+        download.py     # Source registry and download logic
+        search.py       # Search and query construction for each catalog
+        filter.py       # Interactive filtering logic
+        export.py       # Save results to CSV, JSON, XML, etc.
+        utils.py        # Shared helpers (formatting, validation, etc.)
 
 ## Installation
 
@@ -15,19 +27,23 @@ git clone git@github.com:seismicshaker/earthquakeCatalogDownloader.git
 ```
 
 # TODO: Setup conda env
+
 2. Install Python dependencies
 
 _Existing conda environment_
+
 ```sh
 conda install --yes --file requirements.txt
 ```
 
 _New conda environment_
+
 ```sh
 conda create --name catalogDL --file requirements.txt
 ```
 
 _Global python environment_
+
 ```sh
 pip install -r requirements
 ```
