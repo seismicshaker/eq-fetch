@@ -6,18 +6,23 @@ authors = [{ name = "Adam Arce", email = "adamarce@ymail.com" }]
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-  "click>=8.0",
-  "requests",
+  "click",
+  "rich",
+  "rich-click",
   "pandas",
+  "requests",
+  "beautifulsoup4",
   "obspy",
   "numpy",
   "Cython",
   "jupyter",
   "matplotlib",
   "SQLAlchemy",
+  "dicttoxml",
 ]
 [project.scripts]
 eq-fetch = "eq_fetch.cli:main"
+biblio-fetch = "eq_fetch.biblio:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -25,3 +30,6 @@ where = ["src"]
 [build-system]
 requires = ["setuptools>=61", "wheel", "Cython"]
 build-backend = "setuptools.build_meta"
+
+[tool.pyright]
+reportMissingTypeStubs = "none"
