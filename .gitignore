@@ -1,3 +1,6 @@
+# Ignore Catalogs
+*.csv
+
 # Python chache
 __pycache__/
 .venv
