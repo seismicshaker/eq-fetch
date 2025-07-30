@@ -138,7 +138,7 @@ def main(
     query = ""
     try:
         conn = sqlite3.connect(_DB_PATH)
-        query = "SELECT ISC_event, Origin_Time, Lat, Lon, Dep, Mag FROM isc_events WHERE 1=1"
+        query = "SELECT ISC_event, Origin_Time, Lat, Lon, Depth, Mag FROM isc_events WHERE 1=1"
 
         if search_criteria.start_time:
             query += " AND Origin_Time >= ?"
@@ -157,7 +157,7 @@ def main(
             params.extend(sorted(search_criteria.lons))
 
         if search_criteria.deps and len(search_criteria.deps) == 2:
-            query += " AND Dep BETWEEN ? AND ?"
+            query += " AND Depth BETWEEN ? AND ?"
             params.extend(sorted(search_criteria.deps))
 
         if search_criteria.mags and len(search_criteria.mags) == 2:
@@ -184,6 +184,7 @@ def main(
                 "Lon",
                 "Dep",
                 "Mag",
+                "DOI_link",
                 "Bibliography_Entry",
             ]
         ]
@@ -197,7 +198,7 @@ def main(
             origin_time = UTCDateTime(event["Origin_Time"]).isoformat()
             lat = str(event["Lat"])
             lon = str(event["Lon"])
-            dep = str(event["Dep"])
+            dep = str(event["Depth"])
             max_mag = str(event["Mag"])
 
             bibliographies = fetch_bibliographies(event_id)
@@ -210,13 +211,14 @@ def main(
                         lon,
                         dep,
                         max_mag,
+                        "http://dx.doi.org/" + bib_entry.split("DOI:")[1].strip(),
                         bib_entry,
                     ]
                     for bib_entry in bibliographies
                 )
             else:
                 all_bibliographies.append(
-                    [event_id, origin_time, lat, lon, dep, max_mag, ""]
+                    [event_id, origin_time, lat, lon, dep, max_mag, "", ""]
                 )
 
         with open(search_criteria.output, "w", newline="", encoding="utf-8") as f:
