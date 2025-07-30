@@ -1,4 +1,3 @@
-import argparse
 import csv
 import random
 import sqlite3
@@ -14,64 +13,10 @@ from obspy.core.utcdatetime import UTCDateTime
 from rich.console import Console
 from rich.progress import track
 
+from eq_fetch import BibliographyCriteria, RangeParams
+
 console = Console()
-
 _DB_PATH = Path("data/event_index.db")
-
-
-class BibliographyCriteria(argparse.Namespace):
-    # Instances
-    output: Path
-    start_time: UTCDateTime
-    end_time: UTCDateTime
-    lats: list[float]
-    lons: list[float]
-    deps: list[float]
-    mags: list[float]
-    journal: str
-    author: str
-
-    def __init__(self):
-        self.output = Path("./bibliographies.csv")
-        self.start_time = UTCDateTime("1800/01/01")
-        self.end_time = UTCDateTime("2025/12/31")
-        self.lats = [-90.0, 90.0]
-        self.lons = [-180.0, 180.0]
-        self.deps = [0, 3500]
-        self.mags = [10e-10, 10]
-        self.journal = ""
-        self.author = ""
-
-        super().__init__()
-
-
-class OneOrTwoFloatsParamType(click.ParamType):
-    name: str = "FLOAT_RANGE"
-
-    def convert(self, value: str, param, ctx):
-        try:
-            float_values = [float(v) for v in value.split()]
-        except ValueError:
-            self.fail(
-                f"{value!r} is not a valid float or space-separated list of floats.",
-                param,
-                ctx,
-            )
-
-        if not (1 <= len(float_values) <= 2):
-            self.fail(
-                f"Expected 1 or 2 values, but got {len(float_values)} for {param.name}.",
-                param,
-                ctx,
-            )
-
-        if len(float_values) == 1:
-            return [float_values[0], float_values[0]]
-        else:
-            return float_values
-
-
-ONE_OR_TWO_FLOATS = OneOrTwoFloatsParamType()
 
 
 def fetch_bibliographies(event_id: int) -> list[str]:
@@ -80,28 +25,7 @@ def fetch_bibliographies(event_id: int) -> list[str]:
     bibliographies: list[str] = []
 
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        text_content = soup.get_text()
-        lines = text_content.splitlines()
-
-        if len(lines[24].split()) == 17:
-            lines[25] = lines[25][91:]
-        elif len(lines[24].split()) == 19:
-            lines[25] = lines[25][107:]
-        else:
-            print(f"{len(lines[24].split())=}")
-            sys.exit(0)
-
-        for line in lines[25:-10]:
-            if line:
-                bibliographies.append(line.strip())
-
-        time.sleep(round(random.uniform(0.45, 0.55), 2))
-
+        _scrape_bulletin(url, bibliographies)
     except requests.exceptions.RequestException as e:
         console.print(
             f"[bold red]Error fetching bibliography for event {event_id}: {e}[/bold red]"
@@ -111,6 +35,27 @@ def fetch_bibliographies(event_id: int) -> list[str]:
             f"[bold red]An unexpected error occurred for event {event_id}: {e}[/bold red]"
         )
     return bibliographies
+
+
+def _scrape_bulletin(url: str, bibliographies: list[str]):
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    text_content = soup.get_text()
+    lines = text_content.splitlines()
+
+    if len(lines[24].split()) == 17:
+        lines[25] = lines[25][91:]
+    elif len(lines[24].split()) == 19:
+        lines[25] = lines[25][107:]
+    else:
+        print(f"{len(lines[24].split())=}")
+        sys.exit(0)
+
+    bibliographies.extend(line.strip() for line in lines[25:-10] if line)
+    time.sleep(round(random.uniform(0.45, 0.55), 2))
 
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
@@ -134,22 +79,22 @@ def fetch_bibliographies(event_id: int) -> list[str]:
 )
 @click.option(
     "--lats",
-    type=ONE_OR_TWO_FLOATS,
+    type=RangeParams(),
     help="Central latitude or latitude range. Provide 1 or 2 values separated by spaces.",
 )
 @click.option(
     "--lons",
-    type=ONE_OR_TWO_FLOATS,
+    type=RangeParams(),
     help="Central longitude or longitude range. Provide 1 or 2 values separated by spaces.",
 )
 @click.option(
     "--deps",
-    type=ONE_OR_TWO_FLOATS,
+    type=RangeParams(),
     help="Central depth or depth range in km. Provide 1 or 2 values separated by spaces.",
 )
 @click.option(
     "--mags",
-    type=ONE_OR_TWO_FLOATS,
+    type=RangeParams(),
     help="Central magnitude or magnitude range. Provide 1 or 2 values separated by spaces.",
 )
 @click.option("--journal", type=str, help="Select Journal Name.")
@@ -201,9 +146,7 @@ def main(
 
         if search_criteria.start_time:
             query += " AND Origin_Time >= ?"
-            params.append(
-                str(search_criteria.start_time)
-            )  # Convert UTCDateTime to string for comparison
+            params.append(str(search_criteria.start_time))
 
         if search_criteria.end_time:
             query += " AND Origin_Time <= ?"
@@ -237,8 +180,7 @@ def main(
             f"[bold green]Found {len(events_df)} events matching the criteria in local DB. Proceeding to fetch bibliographies...[/bold green]"
         )
 
-        all_bibliographies = []
-        all_bibliographies.append(
+        all_bibliographies = [
             [
                 "ISC_event",
                 "Origin_Time",
@@ -248,8 +190,7 @@ def main(
                 "Mag",
                 "Bibliography_Entry",
             ]
-        )
-
+        ]
         for _, event in track(
             events_df.iterrows(),
             total=len(events_df),
@@ -265,18 +206,18 @@ def main(
 
             bibliographies = fetch_bibliographies(event_id)
             if bibliographies:
-                for bib_entry in bibliographies:
-                    all_bibliographies.append(
-                        [
-                            event_id,
-                            origin_time,
-                            lat,
-                            lon,
-                            depth,
-                            max_mag,
-                            bib_entry,
-                        ]
-                    )
+                all_bibliographies.extend(
+                    [
+                        event_id,
+                        origin_time,
+                        lat,
+                        lon,
+                        depth,
+                        max_mag,
+                        bib_entry,
+                    ]
+                    for bib_entry in bibliographies
+                )
             else:
                 all_bibliographies.append(
                     [event_id, origin_time, lat, lon, depth, max_mag, ""]
