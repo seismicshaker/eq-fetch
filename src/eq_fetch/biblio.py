@@ -19,7 +19,7 @@ console = Console()
 _DB_PATH = Path("data/event_index.db")
 
 
-def fetch_bibliographies(event_id: int) -> list[str]:
+def fetch_bibliographies(event_id: str) -> list[str]:
     base_url = "https://www.isc.ac.uk/cgi-bin/FormatBibprint.pl"
     url: str = f"{base_url}?evid={event_id}"
     bibliographies: list[str] = []
@@ -110,11 +110,7 @@ def main(
     author: str,
     journal: str,
 ):
-    """
-    Extracts bibliographies for ISC seismic events based on user-specified filters.
-
-    The extracted data is saved to a CSV file.
-    """
+    """Extracts bibliographies for ISC seismic events based on user-specified filters."""
     search_criteria = BibliographyCriteria()
 
     search_criteria.output = Path(output)
@@ -142,7 +138,7 @@ def main(
     query = ""
     try:
         conn = sqlite3.connect(_DB_PATH)
-        query = "SELECT ISC_event, Origin_Time, Lat, Lon, Depth, Mag FROM isc_events WHERE 1=1"
+        query = "SELECT ISC_event, Origin_Time, Lat, Lon, Dep, Mag FROM isc_events WHERE 1=1"
 
         if search_criteria.start_time:
             query += " AND Origin_Time >= ?"
@@ -161,7 +157,7 @@ def main(
             params.extend(sorted(search_criteria.lons))
 
         if search_criteria.deps and len(search_criteria.deps) == 2:
-            query += " AND Depth BETWEEN ? AND ?"
+            query += " AND Dep BETWEEN ? AND ?"
             params.extend(sorted(search_criteria.deps))
 
         if search_criteria.mags and len(search_criteria.mags) == 2:
@@ -186,7 +182,7 @@ def main(
                 "Origin_Time",
                 "Lat",
                 "Lon",
-                "Depth",
+                "Dep",
                 "Mag",
                 "Bibliography_Entry",
             ]
@@ -197,12 +193,12 @@ def main(
             description="Fetching bibliographies...",
             console=console,
         ):
-            event_id: int = int(event["ISC_event"])
-            origin_time = UTCDateTime(event["Origin_Time"])
-            lat = float(event["Lat"])
-            lon = float(event["Lon"])
-            depth = float(event["Depth"])
-            max_mag = float(event["Mag"])
+            event_id = str(int(event["ISC_event"]))
+            origin_time = UTCDateTime(event["Origin_Time"]).isoformat()
+            lat = str(event["Lat"])
+            lon = str(event["Lon"])
+            dep = str(event["Dep"])
+            max_mag = str(event["Mag"])
 
             bibliographies = fetch_bibliographies(event_id)
             if bibliographies:
@@ -212,7 +208,7 @@ def main(
                         origin_time,
                         lat,
                         lon,
-                        depth,
+                        dep,
                         max_mag,
                         bib_entry,
                     ]
@@ -220,7 +216,7 @@ def main(
                 )
             else:
                 all_bibliographies.append(
-                    [event_id, origin_time, lat, lon, depth, max_mag, ""]
+                    [event_id, origin_time, lat, lon, dep, max_mag, ""]
                 )
 
         with open(search_criteria.output, "w", newline="", encoding="utf-8") as f:
