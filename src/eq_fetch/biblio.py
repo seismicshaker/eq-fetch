@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from obspy.core.utcdatetime import UTCDateTime
 from rich.console import Console
 from rich.progress import track
+import flinnengdahl
 
 from eq_fetch import BibliographyCriteria, RangeParams
 
@@ -176,14 +177,16 @@ def main(
             f"[bold green]Found {len(events_df)} events matching the criteria in local DB. Proceeding to fetch bibliographies...[/bold green]"
         )
 
+        fe = flinnengdahl.FlinnEngdahl()
         all_bibliographies = [
             [
                 "ISC_event",
                 "Origin_Time",
+                "Mag",
                 "Lat",
                 "Lon",
                 "Dep",
-                "Mag",
+                "Region",
                 "DOI_link",
                 "Bibliography_Entry",
             ]
@@ -200,6 +203,7 @@ def main(
             lon = str(event["Lon"])
             dep = str(event["Depth"])
             max_mag = str(event["Mag"])
+            region = fe.name(float(lat), float(lon))
 
             bibliographies = fetch_bibliographies(event_id)
             if bibliographies:
@@ -207,10 +211,11 @@ def main(
                     [
                         event_id,
                         origin_time,
+                        max_mag,
                         lat,
                         lon,
                         dep,
-                        max_mag,
+                        region,
                         "http://dx.doi.org/" + bib_entry.split("DOI:")[1].strip(),
                         bib_entry,
                     ]
@@ -218,7 +223,7 @@ def main(
                 )
             else:
                 all_bibliographies.append(
-                    [event_id, origin_time, lat, lon, dep, max_mag, "", ""]
+                    [event_id, max_mag, origin_time, lat, lon, dep, region, "", ""]
                 )
 
         with open(search_criteria.output, "w", newline="", encoding="utf-8") as f:
