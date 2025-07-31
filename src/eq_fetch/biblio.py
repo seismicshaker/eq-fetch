@@ -1,3 +1,4 @@
+import contextlib
 import csv
 import random
 import sqlite3
@@ -5,6 +6,7 @@ import sys
 import time
 from pathlib import Path
 
+import flinnengdahl
 import pandas as pd
 import requests
 import rich_click as click
@@ -12,7 +14,6 @@ from bs4 import BeautifulSoup
 from obspy.core.utcdatetime import UTCDateTime
 from rich.console import Console
 from rich.progress import track
-import flinnengdahl
 
 from eq_fetch import BibliographyCriteria, RangeParams
 
@@ -206,8 +207,11 @@ def main(
             region = fe.name(float(lat), float(lon))
 
             bibliographies = fetch_bibliographies(event_id)
-            if bibliographies:
-                all_bibliographies.extend(
+            for bib_entry in bibliographies:
+                doi_link = ""
+                with contextlib.suppress(IndexError):
+                    doi_link = "http://dx.doi.org/" + bib_entry.split("DOI:")[1].strip()
+                all_bibliographies.append(
                     [
                         event_id,
                         origin_time,
@@ -216,14 +220,9 @@ def main(
                         lon,
                         dep,
                         region,
-                        "http://dx.doi.org/" + bib_entry.split("DOI:")[1].strip(),
+                        doi_link,
                         bib_entry,
                     ]
-                    for bib_entry in bibliographies
-                )
-            else:
-                all_bibliographies.append(
-                    [event_id, max_mag, origin_time, lat, lon, dep, region, "", ""]
                 )
 
         with open(search_criteria.output, "w", newline="", encoding="utf-8") as f:
