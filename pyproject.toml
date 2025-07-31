@@ -19,6 +19,8 @@ dependencies = [
   "matplotlib",
   "SQLAlchemy",
   "dicttoxml",
+  "flinnengdahl@git+https://github.com/jsaul/flinnengdahl.git",
+
 ]
 [project.scripts]
 eq-fetch = "eq_fetch.cli:main"
